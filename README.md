@@ -1,55 +1,85 @@
 # **DBP-P002**
 
-## SETUP
+Red social que une estudiantes de todo el mundo en búsqueda de enriquecer su experiencia académica
+
+## INTEGRANTES 🙋‍♂️
+
+- Jeremy Matos Cangalaya [JerM1609]
+- Marcos Ayala Pineda [Marcos-1001]
+- Diego Guerra Chevarria [DiegoGCh]
+- Luis Gutierrez [Luis-ntonio]
+
+## REQUERIMIENTOS
 ```
 node -v
 npm -v
 git --version
 npm install -g @vue/cli
-```
+``` 
 
-```
-vue ui  // launch vue ui
-```
+## MISIÓN
 
-## FRONTEND FOLDER
+- Facilitar el contacto entre asesores y estudiantes, respecto a un curso.
+- Brindar tutoriales y experiencias por medio de publicaciones
+- Brindar cursos hechos por estudiantes para estudiantes.
 
-```
-npm install .       // restore node project (package.json)
-npm run serve       // start dev server
-npm run lint --fix  // fix lint errors
-```
+## VISIÓN
 
-## BACKEND FOLDER
+Ser la plataforma virtual de comunicación interestudiantil por excelencia.
 
-```
-py -m venv venv
-pip install -r requirements.txt
-pip freeze > requirements.txt
-```
+## LIBRERÍAS, FRAMEWORKS Y PLUGINS
 
-## DEPLOYMENT
+- werkezug
+- Flask
+    - flask_login
+    - flask_wtf
+    - flask_mail
+- VueJS
+
+## DISEÑO CONCEPTUAL DE BASE DE DATOS
+
+Se presenta a continuación los requerimientos de `<APP>`
+
+- Un usuario se identifica a través de su e-mail. Además, cuenta con un nombre, username, contraseña, datos personales y de redes sociales.
+
+- Un usuario, si es verificado puede crear y publicar un curso.
+
+- Un curso se identifica con un id de curso, tiene también título, fecha de creación y una reseña. 
+
+- Un usuario puede inscribirse a uno o más cursos, pero no puede inscribirse al curso que el mismo dicta.
+
+- Un usuario puede realizar publicaciones, verlas e interactuar con ellas.
+
+- Un post se identifica con su propio id y el de su creador. Tiene un título, subtítulo, contenido y fecha de creación.
+
+## CONSIDERACIONES
+- No puede existir más de 1 curso con el mismo nombre, entre usuarios.
+    - Hash: `md5(user.id + curso.nombre)`
+- Verificación: Curriculum + validación manual.
+- Pago de cursos: Yape, Plin, PayPal API
+
+## TASKS
+
+- Diego
+    - API
+- Jeremy
+    - consumo de API en Vue
+- Luis
+    - frontend
+- Marcos
+    - OAuth 
+
+## AUTENTICACIÓN
+
+## TESTING
+
+## DESPLIEGUE
 
 0. Set `.env` file in `backend/api/config` folder and upload credentials.
-
 1. Restore venv
-    
-    `py -m venv venv`
-
-    `pip install -r requirements.txt`
-
 2. Launch **Flask API server** 
-    
-    `py run.py`
-
 3. Restore Nodejs project in folder where `package.json` file exists.
-
-    `npm install .`
-
 4. Launch **Vue.js server**    
-
-    `npm run serve`
-
 5. Enjoy it!
 
 ## REFERENCES
