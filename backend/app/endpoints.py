@@ -35,7 +35,6 @@ from .db.models import Usuario, Curso, Lleva, Post
 from . import forms 
 from werkzeug.utils import secure_filename
 
-
 # GLOBAL VARIABLES
 api = Blueprint('login', __name__, template_folder='templates', static_folder='static')
 s = URLSafeTimedSerializer('ClavePocoSecreta')
@@ -64,8 +63,92 @@ def index():
     })
 
 
+@api.route("/user", methods=['GET'])
+def get_user():
+    return jsonify({
+        'success': True,
+        'endpoint': '/user',
+        'method': 'GET'
+    })
+
+
+@api.route("/user", methods=['POST'])
+def create_user():
+    print(f'{type(request.form)} -> {request.form}')
+
+    try:
+        form = forms.SignUpF(request.form)
+        new_user =  Usuario(form.email.data, 
+                            form.username.data, 
+                            form.password.data)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'endpoint': '/user',
+            'method': 'POST'
+        })
+    except Exception as e:
+        db.session.rollback()
+        print(f"EXCEPTION: {e}")
+        abort(500)
+    finally:
+        db.session.close()
+
+
+@api.route("/user", methods=['PATCH'])
+def update_user():
+    return jsonify({
+        'success': True,
+        'endpoint': '/user',
+        'method': 'PATCH'
+    })
+
+
+@api.route("/user", methods=['DELETE'])
+def delete_user():
+    return jsonify({
+        'success': True,
+        'endpoint': '/user',
+        'method': 'DELETE'
+    })
+
 @api.route("/example-endpoint", methods=['GET'])
 def example():
     return jsonify({
         'msg': "CORS available: Message from Flask server"
     })
+
+# ERROR HANDLER
+@api.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        'success': False,
+        'code': 404,
+        'message': 'resource not found'
+    }), 404
+
+@api.errorhandler(500)
+def server_error(error):
+    return jsonify({
+        'success': False,
+        'code': 500,
+        'message': 'server error'
+    }), 500
+
+@api.errorhandler(405)
+def server_error(error):
+    return jsonify({
+        'success': False,
+        'code': 405,
+        'message': 'method not allowed'
+    }), 405
+
+@api.errorhandler(422)
+def unprocessable(error):
+    return jsonify({
+        'success': False,
+        'code': 422,
+        'message': 'unprocessable'
+    }), 422

@@ -1,6 +1,8 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import Example from "../components/Example.vue";
+import SignUpForm from "../components/SignUpForm.vue";
+import LoginForm from "../components/LoginForm.vue";
 
 // URLS are mapped to the components
 const routes = [
@@ -22,6 +24,16 @@ const routes = [
     path: "/example",
     name: "Example",
     component: Example,
+  },
+  {
+    path: "/sign-up",
+    name: "SignUpForm",
+    component: SignUpForm,
+  },
+  {
+    path: "/log-in",
+    name: "LoginForm",
+    component: LoginForm,
   },
 ];
 

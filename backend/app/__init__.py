@@ -3,7 +3,7 @@ from flask_login import LoginManager
 from flask_cors import CORS
 from .db.database import db, migrate
 from .config.config import Config
-from .endpoints import configure_mails, api as API, init_login
+from .endpoints import configure_mails, init_login, api as API
 from .db.database import db
 
 def create_app():
