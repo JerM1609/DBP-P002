@@ -10,7 +10,7 @@ from wtforms import (
     SubmitField
 )
 
-from api.db.models import Post
+from app.db.models import Post
 
 class LoginF(Form):
     username = StringField(
