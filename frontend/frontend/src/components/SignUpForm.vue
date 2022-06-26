@@ -3,6 +3,7 @@
     <form @submit.prevent="handleSubmit">
       <label>Email :</label>
       <input type="email" v-model="email" required />
+      <div v-if="emailError" class="error">{{ emailError }}</div>
 
       <label>Username :</label>
       <input type="username" v-model="username" required />
@@ -39,17 +40,18 @@ export default {
       username: "",
       password: "",
       terms: false,
-      passwordError: "",
       send: false,
+      passwordError: "",
+      emailError: "",
     };
   },
   methods: {
     handleSubmit() {
       // Validate password field length
-      this.passwordError =
-        this.password.length > 6
-          ? ""
-          : "Password should be more than 6 characters long!";
+      // this.passwordError =
+      //   this.password.length > 6
+      //     ? ""
+      //     : "Password should be more than 6 characters long!";
       //   if (!this.passwordError) {
       //     console.log(this.email);
       //     console.log(this.password);
@@ -70,23 +72,46 @@ export default {
         form_data.append(key, item[key]);
       }
 
-      const response = await fetch(path, {
+      // const response = await fetch(path, {
+      //   method: "POST",
+      //   body: form_data,
+      // });
+      // const responseText = await response.text();
+      // let responseJSON = JSON.parse(responseText);
+      // if (responseJSON["code"] === 200) this.$router.push("/log-in");
+      this.emailError = "";
+      this.passwordError = "";
+
+      fetch(path, {
         method: "POST",
         body: form_data,
-      });
-      const responseText = await response.text();
-      console.log(response);
-      console.log(responseText);
-      //     .then(function (response) {
-      //       console.log("response : ", response);
-      //       console.log("responseJSON : ", response.json());
-      //     })
-      //     .catch((err) => {
-      //       console.error(err);
-      //     });
+      })
+        .then(async (response) => {
+          const responseText = await response.text();
+          return JSON.parse(responseText);
+        })
+        .then((responseJSON) => {
+          console.log(responseJSON);
+          if (responseJSON["code"] === 200) {
+            this.$router.push("/log-in");
+          } else {
+            this.email = "";
+            this.username = "";
+            this.password = "";
+            this.emailError = "Email is already used";
+          }
+        })
+        .catch((err) => console.log(err));
     },
   },
 };
+
+/**
+ * https://dmitripavlutin.com/fetch-with-json/
+ * https://stackoverflow.com/questions/22783108/convert-js-object-to-form-data
+ * https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
+ * https://learningwithmanjeet.com/create-a-signup-form-with-vue-js/
+ */
 </script>
 
 <style scoped>

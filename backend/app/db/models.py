@@ -48,8 +48,28 @@ class Usuario(UserMixin, db.Model):
     def get_id(self):
         return (self.email)
 
+    def get_attributes(self):
+        dict_obj = {
+            "email" : self.email,
+            "username" : self.username,
+            "country" : self.country,
+            "institute" : self.institute,
+            "career" : self.career,
+            "website" : self.website,
+            "github" : self.github,
+            "twitter" : self.twitter,
+            "instagram" : self.instagram,
+            "facebook" : self.facebook,
+            "photo" : self.photo,
+        }
+        for k, v in dict_obj.items():
+            if dict_obj[k] is None:
+                dict_obj[k] = ""
+
+        return dict_obj
+
     def __repr__(self) -> str:
-        return f'e: {self.email} \tu: {self.username} \tg: {self.github}'
+        return f'e: {self.email} \tu: {self.username} \tc: {self.confirmacion}'
 
 class Curso(db.Model):
     __tablename__ = 'curso'

@@ -35,6 +35,12 @@ const routes = [
     name: "LoginForm",
     component: LoginForm,
   },
+  {
+    path: "/profile",
+    name: "profile",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/ProfileView.vue"),
+  },
 ];
 
 const router = createRouter({

@@ -8,7 +8,7 @@
       <input type="password" v-model="password" required />
 
       <div class="button">
-        <button class="submit" type="submit">Sign up here</button>
+        <button class="submit" type="submit">Log in</button>
       </div>
     </form>
 

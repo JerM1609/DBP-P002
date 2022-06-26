@@ -65,11 +65,38 @@ def index():
 
 @api.route("/user", methods=['GET'])
 def get_user():
-    return jsonify({
-        'success': True,
-        'endpoint': '/user',
-        'method': 'GET'
-    })
+    print(f'{type(request.form)} -> {request.form}')
+    err_description = ""
+    try:
+        form = forms.LoginF(request.form)
+        username = form.username.data
+        password = form.password.data
+
+        usuario =  Usuario.query.filter_by(username = username).first()
+        print(f"user -> {usuario}")
+        
+        if  usuario is not None and \
+            usuario.check_password(password) and \
+            usuario.confirmacion:
+
+            login_user(usuario, remember=True)
+            return jsonify({
+                'success': True,
+                'endpoint': '/user',
+                'method': 'GET',
+                'user': usuario.get_attributes()
+            })    
+        else: 
+            if usuario is None:
+                err_description = "user not found"
+            elif not usuario.check_password(password):
+                err_description = "incorrect password"
+            elif not usuario.confirmacion:
+                err_description = "unconfirmed user"
+            abort(500)
+    except Exception as e:
+        print(f"EXCEPTION: {e}")
+        abort(500, description=err_description)
 
 
 @api.route("/user", methods=['POST'])
@@ -86,6 +113,7 @@ def create_user():
 
         return jsonify({
             'success': True,
+            'code': 200,
             'endpoint': '/user',
             'method': 'POST'
         })
@@ -134,7 +162,8 @@ def server_error(error):
     return jsonify({
         'success': False,
         'code': 500,
-        'message': 'server error'
+        'message': 'server error',
+        'description': str(error)
     }), 500
 
 @api.errorhandler(405)
