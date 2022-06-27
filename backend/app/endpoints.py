@@ -1,4 +1,5 @@
 from datetime import datetime
+import email
 from email.message import Message
 import hashlib
 from itertools import accumulate
@@ -68,7 +69,7 @@ def OAuth_init(app):
         client_kwargs={'scope': 'openid email profile'},
     )
 
-@api.route('/google_login/')
+@api.route('/login_google/')
 def google():
 
     google = oauth.create_client('google')  # create the google oauth client
@@ -83,11 +84,42 @@ def google_auth():
     token = google.authorize_access_token()  
     resp = google.get('userinfo')  #Informacion del usuario
     user_info = resp.json()
+    
     user = oauth.google.userinfo()  
-    print(user_info)
 
-    session['profile'] = user_info
-    return redirect('/', user_info)    
+    usuario =  Usuario.query.filter_by(email = user_info['email']).first()
+
+
+    if usuario is None: 
+        username = ""
+
+        for x in user_info['email']:             
+            if x == '@':
+                break
+            username += x
+
+
+        new_user =  Usuario(email = user_info['email'], 
+                            username= username, 
+                            password = user_info['id'])
+        new_user.confirmacion = True
+        db.session.add(new_user)
+        db.session.commit()
+        
+        usuario = new_user
+            
+        
+
+    else: 
+        login_user(usuario, remember=True)
+
+   
+    return jsonify({
+                'success': True,
+                'endpoint': '/authorize',
+                'method': 'GET',
+                'user': usuario.get_attributes()
+            })
 
 
 
@@ -173,6 +205,14 @@ def create_user():
         abort(500)
     finally:
         db.session.close()
+
+
+@api.route("/logout", methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    print("Te deslogeaste con éxito :)")
+    return redirect("/")
 
 
 @api.route("/user", methods=['PATCH'])
