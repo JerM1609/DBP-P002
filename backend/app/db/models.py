@@ -10,7 +10,11 @@ class Usuario(UserMixin, db.Model):
     email = db.Column(db.String(50), primary_key = True)
     username = db.Column(db.String(30), unique=True)
     password_hashed = db.Column(db.String(128), nullable=False)
-    
+    #0 - student, 1 - teacher, 2 - admin
+    tipo_usuario = db.Column(db.Integer, nullable=False, default=0)
+    #otra opcion es
+    #profesor = db.Column(db.Boolean, default=False)
+
     # personal data
     country = db.Column(db.String(), nullable=True)
     institute = db.Column(db.String(), nullable=True)
@@ -26,11 +30,12 @@ class Usuario(UserMixin, db.Model):
     confirmacion = db.Column(db.Boolean, default=False)
     confirmacion_date = db.Column(db.DateTime(timezone=True), default=datetime.datetime.utcnow)
     photo = db.Column(db.String(), nullable = True, default='profile.jpg')
+    #qr_yape = db.Column(db.String(), nullable = True)
 
     #relaciones
-    #posts = db.relationship('Post', backref='autor')
-    #cursos_lleva = db.relationship('Lleva', backref='lleva')
-    #cursos_teach = db.relationship('Curso', backref='teacher')
+    posts = db.relationship('Post', backref='autor', lazy=True)
+    cursos_lleva = db.relationship('Lleva', backref='lleva', lazy=True)
+    cursos_dicta = db.relationship('Curso', backref='dicta', lazy=True)
 
     def __init__(self, email, username, password):
         self.email = email
@@ -38,6 +43,11 @@ class Usuario(UserMixin, db.Model):
         self.password_hashed = generate_password_hash(password)
         
     
+    def __init__(self, email, username, password):
+        self.email = email
+        self.username = username
+        self.password_hashed = generate_password_hash(password)
+        
     @property
     def password(self):
         raise AttributeError('Password is not readable')
@@ -80,17 +90,13 @@ class Curso(db.Model):
     titulo = db.Column(db.String(), nullable=True)    
     subtitulo = db.Column(db.String(), nullable=True)
     portada = db.Column(db.String(), nullable= True)
-    #relaciones
-    teacher = db.relationship("Usuario", backref="cursos")
 
 class Lleva(db.Model):
     __tablename__ = 'lleva'
     id_curso = db.Column(db.String(), db.ForeignKey('curso.id'), primary_key=True)
     id_user = db.Column(db.String(50), db.ForeignKey('usuario.email'), primary_key = True)
 
-    #relaciones
-    student = db.relationship("Usuario", backref="lleva")
-    curso = db.relationship("Curso", backref="lleva")
+    #relaciones, me parece que no lleva por ser tabla intermedia 
 
 class Post(db.Model):
     __tablename__ = 'post' 
@@ -102,5 +108,39 @@ class Post(db.Model):
     contenido = db.Column(db.Text(), nullable=True)
     portada = db.Column(db.String(), nullable= True)
 
-    #relaciones
-    autor = db.relationship("Usuario", backref="posts")
+    def get_attributes(self):
+        return {
+            "id": self.id,
+            "titulo": self.titulo,
+            "subtitulo": self.subtitulo,
+            "id_autor": self.id_autor,
+            "fecha": self.fecha,
+            "contenido": self.contenido,
+            "portada": self.portada
+        }
+        
+    def insert(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return self.id
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+    def update(self):
+        try:
+            db.session.commit()
+            return self.id
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
