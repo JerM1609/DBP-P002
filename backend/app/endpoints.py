@@ -34,6 +34,8 @@ from .db.models import Usuario, Curso, Lleva, Post
 
 from . import forms 
 from werkzeug.utils import secure_filename
+from authlib.integrations.flask_client import OAuth
+
 
 # GLOBAL VARIABLES
 api = Blueprint('login', __name__, template_folder='templates', static_folder='static')
@@ -41,6 +43,54 @@ s = URLSafeTimedSerializer('ClavePocoSecreta')
 mail = Mail()
 
 # AUXILIARY FUNCTIONS
+
+GOOGLE_CLIENT_ID = '59012120039-54jvcg23a2met0bl2oheigt0sfrdn9mu.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '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'
+CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+
+
+#https://www.youtube.com/watch?v=BfYsdNaHrps 
+def OAuth_init(app):
+    global oauth
+    #global google
+    oauth = OAuth(app)
+    google = oauth.register(
+        name='google',
+        client_id=GOOGLE_CLIENT_ID,
+        client_secret=GOOGLE_CLIENT_SECRET,
+        access_token_url='https://oauth2.googleapis.com/token',
+        access_token_params=None,
+        authorize_url='https://accounts.google.com/o/oauth2/auth',
+        authorize_params=None,
+        api_base_url='https://www.googleapis.com/oauth2/v1/',
+        userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',  # This is only needed if using openId to fetch user info        
+        server_metadata_url=CONF_URL,
+        client_kwargs={'scope': 'openid email profile'},
+    )
+
+@api.route('/google_login/')
+def google():
+
+    google = oauth.create_client('google')  # create the google oauth client
+    redirect_uri = url_for('login.google_auth', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+
+
+@api.route('/authorize')
+def google_auth():
+    google = oauth.create_client('google') 
+    token = google.authorize_access_token()  
+    resp = google.get('userinfo')  #Informacion del usuario
+    user_info = resp.json()
+    user = oauth.google.userinfo()  
+    print(user_info)
+
+    session['profile'] = user_info
+    return redirect('/', user_info)    
+
+
+
 
 def init_login(app):
     login_manager = LoginManager()
