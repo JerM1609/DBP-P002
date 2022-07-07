@@ -73,13 +73,13 @@ export default {
 };
 </script>
 <style scoped>
-.sep{
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    font-size: larger;
-    margin-top: 3%;
-    margin-bottom: 3%;
-    padding: 5px 10px 5px 10px;
+.sep {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  font-size: larger;
+  margin-top: 3%;
+  margin-bottom: 3%;
+  padding: 5px 10px 5px 10px;
 }
 </style>
