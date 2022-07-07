@@ -1,5 +1,5 @@
-import { createRouter, createWebHashHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import { createRouter, createWebHistory } from "vue-router";
+import TheNavigation from "../components/TheNavigation.vue";
 import Example from "../components/Example.vue";
 import SignUpForm from "../components/SignUpForm.vue";
 import LoginForm from "../components/LoginForm.vue";
@@ -9,7 +9,7 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: HomeView,
+    component: TheNavigation,
   },
   {
     path: "/about",
@@ -36,15 +36,16 @@ const routes = [
     component: LoginForm,
   },
   {
-    path: "/profile",
-    name: "profile",
+    path: "/:slug" + ":Id/edit",
+    name: "Change",
+    props: true,
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/ProfileView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/FormView.vue"),
   },
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 });
 

@@ -2,15 +2,14 @@
 Starting point from which all other components will be rendered
 -->
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/log-in">Log-in</router-link> |
-    <router-link to="/sign-up">Sign-up</router-link> |
-    <router-link to="/example">Example</router-link>
-  </nav>
   <router-view />
 </template>
+
+<script>
+export default {
+  name: "App",
+};
+</script>
 
 <style>
 #app {
@@ -19,6 +18,9 @@ Starting point from which all other components will be rendered
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+html {
+  background-color: aqua;
 }
 
 nav {
