@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import RootView from "../views/RootView.vue";
-import SignUp from "../views/SignUp.vue";
-import Login from "../views/Login.vue";
-import TheNavigation from "../components/TheNavigation.vue";
+import SignUp from "../components/SignUpForm.vue";
+import Login from "../components/LoginForm.vue";
+import Dashboard from "../views/DashboardView.vue";
 
 // URLS are mapped to the components
 const routes = [
@@ -22,9 +22,44 @@ const routes = [
   },
   {
     path: "/dashboard",
-    name: "TheNavigation",
+    name: "Dashboard",
     props: true,
-    component: TheNavigation,
+    component: Dashboard,
+  },
+  {
+    path: "/post/:slug",
+    name: "Post",
+    props: true,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/PostView.vue"),
+  },
+  {
+    path: "/profile/:name",
+    name: "Profile",
+    props: true,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/ProfileView.vue"),
+  },
+  {
+    path: "/create/:slug",
+    name: "Create",
+    props: true,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/PostView.vue"),
+  },
+  {
+    path: "/edit/:slug/:Id",
+    name: "Change",
+    props: true,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/PostView.vue"),
+  },
+  {
+    path: "/course/:slug",
+    name: "Course",
+    props: true,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/CourseView.vue"),
   },
   {
     path: "/sign-up",
@@ -49,12 +84,6 @@ const routes = [
     props: true,
     component: () =>
       import(/* webpackChunkName: "Course" */ "../views/CourseView.vue"),
-  },
-  {
-    path: "/profile/:prof",
-    name: "Profile",
-    component: () =>
-      import(/* webpackChunkName: "Profile" */ "../views/ProfileView.vue"),
   },
 ];
 

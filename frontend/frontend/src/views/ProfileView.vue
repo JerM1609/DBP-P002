@@ -1,159 +1,163 @@
 <template>
-  <div class="cuerpo">
-    <div class="segmento izq">
-      <div class="prof">
-        <figure class="ContenedorFoto">
-          <img
-            class="imagen"
-            src="../assets/logo.png"
-            alt=""
-            height="220px"
-            width="220px"
-          />
-          <!--- --->
-          <figcaption class="Nombre">
-            <!--<h2>{{ user.username }}</h2>-->
-            a
-          </figcaption>
-        </figure>
-        <div class="datos">
-          <p>
-            <!--{% if user.career is not none %}
+  <section>
+    <TheNavigation />
+    <div class="cuerpo">
+      <div class="segmento izq">
+        <div class="prof">
+          <figure class="ContenedorFoto">
+            <img
+              class="imagen"
+              src="../assets/logo.png"
+              alt=""
+              height="220px"
+              width="220px"
+            />
+            <!--- --->
+            <figcaption class="Nombre">
+              <!--<h2>{{ user.username }}</h2>-->
+              a
+            </figcaption>
+          </figure>
+          <div class="datos">
+            <p>
+              <!--{% if user.career is not none %}
             {{ user.career }}
             {% else %} - {% endif %}-->
-            a
-          </p>
-          <p>
-            <!--{% if user.institute is not none %}
+              a
+            </p>
+            <p>
+              <!--{% if user.institute is not none %}
             {{ user.institute }}
             {% else %} - {% endif %}-->
-            a
-          </p>
-        </div>
-        <div class="botones">
-          <!--<a href="/editar-perfil/"
+              a
+            </p>
+          </div>
+          <div class="botones">
+            <!--<a href="/editar-perfil/"
             ><button type="button" class="btn btn-primary">
               Editar datos
             </button></a
           >-->
-          <button type="button" class="btn btn-primary">Editar datos</button>
-          <!--<a href="../logout"
+            <button type="button" class="btn btn-primary">Editar datos</button>
+            <!--<a href="../logout"
             ><button type="button" class="btn btn-outline-primary">
               Logout
             </button>
           </a>-->
-          <button type="button" class="btn btn-outline-primary">Logout</button>
+            <button type="button" class="btn btn-outline-primary">
+              Logout
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="links">
-        <div class="interno">
-          <p class="dataname"><strong>Website</strong></p>
-          <p class="data">
-            <!--{% if user.website is not none %}
+        <div class="links">
+          <div class="interno">
+            <p class="dataname"><strong>Website</strong></p>
+            <p class="data">
+              <!--{% if user.website is not none %}
             <a href="{{user.website}}">{{ user.website }}</a>
             {% else %} - {% endif %}-->
-            a
-          </p>
-        </div>
-        <hr width="100%" size="2px" />
-        <div class="interno">
-          <p class="dataname"><strong>GitHub</strong></p>
-          <p class="data">
-            <!--{% if user.github is not none %} {% set idGithub =
+              a
+            </p>
+          </div>
+          <hr width="100%" size="2px" />
+          <div class="interno">
+            <p class="dataname"><strong>GitHub</strong></p>
+            <p class="data">
+              <!--{% if user.github is not none %} {% set idGithub =
             user.github.replace("https://github.com/", "")%}
             <a href="https://github.com/{{idGithub}}" target="_blank">{{
               idGithub
             }}</a>
             {% else %} - {% endif %}-->
-            a
-          </p>
-        </div>
-        <hr width="100%" size="2px" />
-        <div class="interno">
-          <p class="dataname"><strong>Twitter</strong></p>
-          <p class="data">
-            <!--{% if user.twitter is not none %} {% set idTwitter =
+              a
+            </p>
+          </div>
+          <hr width="100%" size="2px" />
+          <div class="interno">
+            <p class="dataname"><strong>Twitter</strong></p>
+            <p class="data">
+              <!--{% if user.twitter is not none %} {% set idTwitter =
             user.twitter.replace("https://twitter.com/", "")%}
             <a href="https://twitter.com/{{idTwitter}}" target="_blank">{{
               idTwitter
             }}</a>
             {% else %} - {% endif %}-->
-            a
-          </p>
-        </div>
-        <hr width="100%" size="2px" />
-        <div class="interno">
-          <p class="dataname"><strong>Instagram</strong></p>
-          <p class="data">
-            <!--{% if user.instagram is not none %} {% set idInstagram =
+              a
+            </p>
+          </div>
+          <hr width="100%" size="2px" />
+          <div class="interno">
+            <p class="dataname"><strong>Instagram</strong></p>
+            <p class="data">
+              <!--{% if user.instagram is not none %} {% set idInstagram =
             user.instagram.replace("https://instagram.com/", "")%}
             <a href="https://instagram.com/{{idInstagram}}" target="_blank">{{
               idInstagram
             }}</a>
             {% else %} - {% endif %}-->
-            a
-          </p>
-        </div>
-        <hr width="100%" size="2px" />
-        <div class="interno">
-          <p class="dataname"><strong>Facebook</strong></p>
-          <p class="data">
-            <!--{% if user.facebook is not none %} {% set idFB =
+              a
+            </p>
+          </div>
+          <hr width="100%" size="2px" />
+          <div class="interno">
+            <p class="dataname"><strong>Facebook</strong></p>
+            <p class="data">
+              <!--{% if user.facebook is not none %} {% set idFB =
             user.facebook.replace("https://facebook.com/", "")%}
             <a href="https://facebook.com/{{idFB}}" target="_blank">{{
               idFB
             }}</a>
             {% else %} - {% endif %}-->
-            a
-          </p>
+              a
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="segmento der">
-      <div class="dat">
-        <div class="interno2">
-          <p class="dataname"><strong>Username</strong></p>
-          <p class="data2">
-            <!--{{ user.username }}--->
-            a
-          </p>
-        </div>
-        <hr width="100%" size="2px" />
-        <div class="interno2">
-          <p class="dataname"><strong>Email</strong></p>
-          <p class="data2">
-            <!--{{ user.email }}-->
-            a
-          </p>
-        </div>
-        <hr width="100%" size="2px" />
-        <div class="interno2">
-          <p class="dataname"><strong>Country</strong></p>
-          <p class="data2">
-            <!--{% if user.country is not none %}
+      <div class="segmento der">
+        <div class="dat">
+          <div class="interno2">
+            <p class="dataname"><strong>Username</strong></p>
+            <p class="data2">
+              <!--{{ user.username }}--->
+              a
+            </p>
+          </div>
+          <hr width="100%" size="2px" />
+          <div class="interno2">
+            <p class="dataname"><strong>Email</strong></p>
+            <p class="data2">
+              <!--{{ user.email }}-->
+              a
+            </p>
+          </div>
+          <hr width="100%" size="2px" />
+          <div class="interno2">
+            <p class="dataname"><strong>Country</strong></p>
+            <p class="data2">
+              <!--{% if user.country is not none %}
             {{ user.country }}
             {% else %} - {% endif %}-->
-            a
-          </p>
-        </div>
-        <hr width="100%" size="2px" />
-        <div class="interno2">
-          <p class="dataname"><strong>Institute</strong></p>
-          <p class="data2">
-            <!--{% if user.institute is not none %}
+              a
+            </p>
+          </div>
+          <hr width="100%" size="2px" />
+          <div class="interno2">
+            <p class="dataname"><strong>Institute</strong></p>
+            <p class="data2">
+              <!--{% if user.institute is not none %}
             {{ user.institute }}
             {% else %} - {% endif %}-->
-            a
-          </p>
+              a
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="cont">
-        <div class="llevando">
-          <div class="header">
-            <h2>Cursos</h2>
-          </div>
-          <!--{% if courses|length > 0 %} {% for c in courses %}
+        <div class="cont">
+          <div class="llevando">
+            <div class="header">
+              <h2>Cursos</h2>
+            </div>
+            <!--{% if courses|length > 0 %} {% for c in courses %}
           <div class="curso">
             <a href="/curso_post/{{c.id}}"
               ><p>{{ c.titulo }}</p></a
@@ -164,16 +168,16 @@
             <p><a href="#">Mas</a></p>
           </div>
           {% else %}-->
-          <div class="curso">
-            <p>Nothing for now</p>
+            <div class="curso">
+              <p>Nothing for now</p>
+            </div>
+            <!--{% endif %}-->
           </div>
-          <!--{% endif %}-->
-        </div>
-        <div class="asesor">
-          <div class="header">
-            <h2>Asesorar</h2>
-          </div>
-          <!--{% if my_courses|length > 0 %} {% for c in my_courses %}
+          <div class="asesor">
+            <div class="header">
+              <h2>Asesorar</h2>
+            </div>
+            <!--{% if my_courses|length > 0 %} {% for c in my_courses %}
           <div class="curso">
             <a href="/curso_post/{{c.id}}"
               ><p>{{ c.titulo }}</p></a
@@ -184,19 +188,25 @@
             <p><a href="#">Mas</a></p>
           </div>
           {% else %}-->
-          <div class="curso">
-            <p>Nothing for now</p>
+            <div class="curso">
+              <p>Nothing for now</p>
+            </div>
+            <!--{% endif %}-->
           </div>
-          <!--{% endif %}-->
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
+import TheNavigation from "@/components/TheNavigation.vue";
 export default {
   name: "Profile",
+  props: ["name"],
+  components: {
+    TheNavigation,
+  },
 };
 </script>
 

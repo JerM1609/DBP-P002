@@ -1,25 +1,27 @@
 <template>
-  <div>
-    <h1 v-if="slug === 'mycourse'">My courses</h1>
-    <h1 v-else-if="slug === 'course'">courses of the comunity</h1>
-    <div v-if="slug === 'mycourse'" class="posts">
-      <div class="publication">
-        <div class="content">
-          <h2><a href="#">as</a></h2>
-          <p>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi
-            nemo impedit animi suscipit. Obcaecati asperiores atque perspiciatis
-            culpa fugiat? Nulla porro rerum ducimus quisquam! Accusantium
-            asperiores fugit quod explicabo nobis.
-          </p>
+  <section>
+    <TheNavigation />
+    <div>
+      <h1 v-if="slug === 'mycourse'">My courses</h1>
+      <h1 v-else-if="slug === 'course'">courses of the comunity</h1>
+      <div v-if="slug === 'mycourse'" class="posts">
+        <div class="publication">
+          <div class="content">
+            <h2><a href="#">as</a></h2>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+              Excepturi nemo impedit animi suscipit. Obcaecati asperiores atque
+              perspiciatis culpa fugiat? Nulla porro rerum ducimus quisquam!
+              Accusantium asperiores fugit quod explicabo nobis.
+            </p>
+          </div>
+          <div class="edition">
+            <button class="btn btn-primary" v-on:click="delete courses.id">
+              Unsubscribe
+            </button>
+          </div>
         </div>
-        <div class="edition">
-          <button class="btn btn-primary" v-on:click="delete courses.id">
-            Unsubscribe
-          </button>
-        </div>
-      </div>
-      <!--
+        <!--
       <div v-for="courses in datas" :key="courses.id" class="posts">
         <div class="publication">
           <div class="content">
@@ -32,21 +34,20 @@
           <button class="btn btn-primary" v-on:click="delete(courses.id)">Unsubscribe</button>
         </div>
       </div>
-      -->
-    </div>
-    <div v-else-if="slug === 'course'" class="posts">
-      <div class="publication">
-        <div>
-          <h2><a href="#">as</a></h2>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi
-            similique quisquam necessitatibus quod quae ratione incidunt! Dolore
-            dolor, beatae, tempora quis similique perferendis labore natus eum
-            corrupti qui, nihil sunt.
-          </p>
+      --></div>
+      <div v-else-if="slug === 'course'" class="posts">
+        <div class="publication">
+          <div>
+            <h2><a href="#">as</a></h2>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi
+              similique quisquam necessitatibus quod quae ratione incidunt!
+              Dolore dolor, beatae, tempora quis similique perferendis labore
+              natus eum corrupti qui, nihil sunt.
+            </p>
+          </div>
         </div>
-      </div>
-      <!--
+        <!--
       <div v-for="course in datas" :key="course.id" class="posts">
         <div class="publication">
           <router-link
@@ -56,16 +57,21 @@
           <p>{{ posts.brief }}</p>
         </div>
       </div>-->
+      </div>
+      <div v-else>
+        <h2>Page not found</h2>
+      </div>
     </div>
-    <div v-else>
-      <h2>Page not found</h2>
-    </div>
-  </div>
+  </section>
 </template>
 <script>
+import TheNavigation from "@/components/TheNavigation.vue";
 export default {
   props: ["slug", "datas"],
   //falta el fetch delete()
+  components: {
+    TheNavigation,
+  },
 };
 </script>
 <style scoped>

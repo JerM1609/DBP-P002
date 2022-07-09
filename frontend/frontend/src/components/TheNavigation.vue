@@ -7,48 +7,36 @@
           <button class="name">Post</button>
           <ul class="hidden">
             <li v-for="route in Post" :key="route.id">
-              <button v-on:click="detect(route.slug)">
-                {{ route.description }}
-              </button>
+              <router-link
+                :to="{ name: route.name, params: { slug: route.slug } }"
+                >{{ route.description }}</router-link
+              >
             </li>
           </ul>
         </li>
         <li class="links">
           <button class="name">Course</button>
           <ul class="hidden">
-            <li v-for="routes in Course" :key="routes.id">
-              <button v-on:click="detect(routes.slug)">
-                {{ routes.description }}
-              </button>
+            <li v-for="route in Course" :key="route.id">
+              <router-link
+                :to="{ name: route.name, params: { slug: route.slug } }"
+                >{{ route.description }}</router-link
+              >
             </li>
           </ul>
         </li>
       </ul>
       <div class="photo">
-        <button v-on:click="detect('profile')" class="photo">
-          <img alt="Vue logo" src="../assets/logo.png" />
-        </button>
+        <router-link :to="{ name: 'Profile', params: { name: 'a' } }">
+          <img alt="Vue logo" src="../assets/logo.png"
+        /></router-link>
       </div>
     </div>
-    <HomeView v-if="page === 'inicio' || page === null" />
-    <Post v-else-if="page === 'Post'" :slug="slug" :datas="datas" />
-    <Post v-else-if="page === 'MyPost'" :slug="slug" :datas="datas" />
-    <Course v-else-if="page === 'Course'" :slug="slug" :datas="datas" />
-    <Course v-else-if="page === 'MyCourse'" :slug="slug" :datas="datas" />
-    <Form v-else-if="page === 'CreatePost'" :datas="datas" :slug="slug" />
-    <Form v-else-if="page === 'CreateCourse'" :datas="datas" :slug="slug" />
-    <Profile v-else-if="page === 'profile'" />
   </section>
 </template>
 
 <script>
 import routes from "@/routes";
-import forms from "@/forms";
-import Form from "@/views/FormView.vue";
-import HomeView from "@/views/HomeView.vue";
-import Profile from "@/views/ProfileView.vue";
-import Course from "@/views/CourseView.vue";
-import Post from "@/views/PostView.vue";
 export default {
   name: "TheNavigation",
   data() {
@@ -66,74 +54,7 @@ export default {
       require: true,
     },
   },
-  components: {
-    Form,
-    HomeView,
-    Profile,
-    Post,
-    Course,
-  },
-  methods: {
-    detect(cadena) {
-      if (cadena === "post") {
-        this.post();
-        this.page = "Post";
-        this.slug = "post";
-      } else if (cadena === "mypost") {
-        this.mypost();
-        this.page = "MyPost";
-        this.slug = "mypost";
-      } else if (cadena === "course") {
-        this.course();
-        this.page = "Course";
-        this.slug = "course";
-      } else if (cadena === "mycourse") {
-        this.mycourse();
-        this.page = "MyCourse";
-        this.slug = "mycourse";
-      } else if (cadena === "createpost") {
-        this.createpost();
-        this.page = "CreatePost";
-        this.slug = "createpost";
-      } else if (cadena === "createcourse") {
-        this.createcourse();
-        this.page = "CreateCourse";
-        this.slug = "createcourse";
-      } else if (cadena === "inicio") {
-        this.page = "inicio";
-        this.slug = "inicio";
-      } else if (cadena === "profile") {
-        this.page = "profile";
-        this.slug = "profile";
-      }
-    },
-    mypost() {
-      fetch("/api/mypost/", { method: "POST" }).then(
-        (response) => (this.datas = response.data)
-      );
-    },
-    post() {
-      fetch("/api/showpost/", { method: "POST" }).then(
-        (response) => (this.datas = response.data)
-      );
-    },
-    mycourse() {
-      fetch("/api/mycourse/", { method: "POST" }).then(
-        (response) => (this.datas = response.data)
-      );
-    },
-    course() {
-      fetch("/api/courses/", { method: "POST" }).then(
-        (response) => (this.datas = response.data)
-      );
-    },
-    createcourse() {
-      this.datas = forms.createcourse;
-    },
-    createpost() {
-      this.datas = forms.createpost;
-    },
-  },
+  methods: {},
 };
 </script>
 <style scoped>
