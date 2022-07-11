@@ -1,6 +1,5 @@
 <template>
   <section>
-    <TheNavigation />
     <div class="cuerpo">
       <div class="segmento izq">
         <div class="prof">
@@ -15,7 +14,8 @@
             <!--- --->
             <figcaption class="Nombre">
               <!--<h2>{{ user.username }}</h2>-->
-              a
+              <!--{{ this.userData }}-->
+              {{ this.idUser }}
             </figcaption>
           </figure>
           <div class="datos">
@@ -44,7 +44,11 @@
               Logout
             </button>
           </a>-->
-            <button type="button" class="btn btn-outline-primary">
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              @click="onLogOut"
+            >
               Logout
             </button>
           </div>
@@ -200,12 +204,31 @@
 </template>
 
 <script>
-import TheNavigation from "@/components/TheNavigation.vue";
+import apiClient from "@/services/api";
+
 export default {
   name: "Profile",
-  props: ["name"],
-  components: {
-    TheNavigation,
+  props: {
+    idUser: {
+      type: String,
+      required: true,
+    },
+    userData: {
+      type: Object,
+      required: false,
+    },
+  },
+  methods: {
+    onLogOut() {
+      apiClient.getLogOut().then((response) => {
+        console.log("response: ", response);
+        if (response.data["success"]) {
+          this.$router.push({
+            name: "RootView",
+          });
+        }
+      });
+    },
   },
 };
 </script>

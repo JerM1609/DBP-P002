@@ -1,6 +1,5 @@
 <template>
   <section>
-    <TheNavigation />
     <div>
       <h1 v-if="slug === 'mypost'">My posts</h1>
       <h1 v-else-if="slug === 'post'">Post of the comunity</h1>
@@ -67,14 +66,11 @@
   </section>
 </template>
 <script>
-import TheNavigation from "@/components/TheNavigation.vue";
 export default {
   props: ["slug", "datas"],
-  components: {
-    TheNavigation,
-  },
 };
 </script>
+
 <style scoped>
 .posts {
   display: flex;

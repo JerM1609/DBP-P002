@@ -1,33 +1,40 @@
 <template>
   <section>
     <div class="nav">
-      <button v-on:click="detect('inicio')" class="head">My page</button>
+      <p class="logo">UTEChana App</p>
+      <router-link to="/dashboard">
+        <button @click="detect('inicio')" class="head">Dashboard</button>
+      </router-link>
       <ul class="nav-links">
         <li class="links">
-          <button class="name">Post</button>
-          <ul class="hidden">
-            <li v-for="route in Post" :key="route.id">
-              <router-link
-                :to="{ name: route.name, params: { slug: route.slug } }"
-                >{{ route.description }}</router-link
-              >
-            </li>
-          </ul>
+          <div class="dropdown">
+            <button class="name">Posts</button>
+            <div class="dropdown-content">
+              <a v-for="route in Post" :key="route.id">
+                <router-link
+                  :to="{ name: route.name, params: { slug: route.slug } }"
+                  >{{ route.description }}</router-link
+                >
+              </a>
+            </div>
+          </div>
         </li>
         <li class="links">
-          <button class="name">Course</button>
-          <ul class="hidden">
-            <li v-for="route in Course" :key="route.id">
-              <router-link
-                :to="{ name: route.name, params: { slug: route.slug } }"
-                >{{ route.description }}</router-link
-              >
-            </li>
-          </ul>
+          <div class="dropdown">
+            <button class="name">Cursos</button>
+            <div class="dropdown-content">
+              <a v-for="route in Course" :key="route.id">
+                <router-link
+                  :to="{ name: route.name, params: { slug: route.slug } }"
+                  >{{ route.description }}</router-link
+                >
+              </a>
+            </div>
+          </div>
         </li>
       </ul>
       <div class="photo">
-        <router-link :to="{ name: 'Profile', params: { name: 'a' } }">
+        <router-link :to="{ name: 'Profile', params: { idUser: 'a' } }">
           <img alt="Vue logo" src="../assets/logo.png"
         /></router-link>
       </div>
@@ -37,6 +44,7 @@
 
 <script>
 import routes from "@/routes";
+
 export default {
   name: "TheNavigation",
   data() {
@@ -57,7 +65,59 @@ export default {
   methods: {},
 };
 </script>
+
 <style scoped>
+/* Navbar container */
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+  font-family: Arial;
+}
+
+/* Links inside the navbar */
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* The dropdown container */
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 .nav {
   display: flex;
   width: 100%;
@@ -87,7 +147,7 @@ export default {
 }
 
 .head {
-  width: 5%;
+  width: 10%;
 }
 
 .photo {

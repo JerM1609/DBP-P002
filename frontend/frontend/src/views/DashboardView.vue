@@ -1,15 +1,11 @@
-<!--
-Starting point from which all other components will be rendered
--->
 <template>
-  <TheNavigation />
-  <router-view />
+  <div class="home">
+    <p>Esto es el diseno de dashboard</p>
+  </div>
 </template>
 
 <script>
-import TheNavigation from "../components/TheNavigation.vue";
 export default {
-  components: { TheNavigation },
   name: "App",
 };
 </script>
