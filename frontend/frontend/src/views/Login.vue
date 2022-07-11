@@ -23,6 +23,7 @@ import apiClient from "@/services/api";
 export default {
   data() {
     return {
+      userData: Object(),
       profile: {
         username: "",
         password: "",
@@ -34,8 +35,10 @@ export default {
       const user = { ...this.profile };
       apiClient.loginUser(user).then((response) => {
         console.log("response: ", response);
+        console.log(response.data["user"]);
         if (response.data["success"]) {
           console.log("yeih");
+          this.$store.state.Usuario = response.data;
           this.$router.push({
             name: "Profile",
             params: {

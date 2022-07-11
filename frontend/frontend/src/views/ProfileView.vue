@@ -15,7 +15,7 @@
             <figcaption class="Nombre">
               <!--<h2>{{ user.username }}</h2>-->
               <!--{{ this.userData }}-->
-              {{ this.idUser }}
+              {{ $store.getters.user }}
             </figcaption>
           </figure>
           <div class="datos">
@@ -215,7 +215,7 @@ export default {
     },
     userData: {
       type: Object,
-      required: false,
+      required: true,
     },
   },
   methods: {
