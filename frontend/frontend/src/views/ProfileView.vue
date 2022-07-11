@@ -204,8 +204,6 @@
 </template>
 
 <script>
-import apiClient from "@/services/api";
-
 export default {
   name: "Profile",
   props: {
@@ -216,18 +214,6 @@ export default {
     userData: {
       type: Object,
       required: true,
-    },
-  },
-  methods: {
-    onLogOut() {
-      apiClient.getLogOut().then((response) => {
-        console.log("response: ", response);
-        if (response.data["success"]) {
-          this.$router.push({
-            name: "RootView",
-          });
-        }
-      });
     },
   },
 };

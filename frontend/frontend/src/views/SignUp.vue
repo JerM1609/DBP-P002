@@ -18,7 +18,7 @@
       </div>
 
       <div class="button">
-        <button @click="onsignUp" class="submit" type="submit">
+        <button @click="login" class="submit" type="submit">
           Sign up here
         </button>
       </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import apiClient from "@/services/api";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -49,6 +49,11 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapGetters({
+      authUser: "auth/user",
+    }),
+  },
   methods: {
     handleSubmit() {
       // Validate password field length
@@ -62,19 +67,19 @@ export default {
       //     console.log(this.terms);
       //   }
     },
-    onsignUp() {
-      this.profile["send"] = true;
-      const user = { ...this.profile };
-      apiClient.registerUser(user).then((response) => {
-        console.log("response: ", response);
-        if (response.data["success"]) {
-          console.log("yeihAAA");
-          this.$router.push({
-            name: "Profile",
-            params: {
-              idUser: response.data["created"],
-            },
-          });
+    ...mapActions({
+      loginUser: "auth/loginUser",
+    }),
+    async login() {
+      await this.loginUser(this.profile).then(() => {
+        if (this.authUser.authenticated) {
+          this.$router.push("/profile");
+        } else {
+          // Handle error
+          this.user = {
+            username: null,
+            password: null,
+          };
         }
       });
     },

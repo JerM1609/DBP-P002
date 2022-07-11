@@ -18,8 +18,7 @@
 </template>
 
 <script>
-import apiClient from "@/services/api";
-
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -30,22 +29,25 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapGetters({
+      authUser: "auth/user",
+    }),
+  },
   methods: {
-    onLogin() {
-      const user = { ...this.profile };
-      apiClient.loginUser(user).then((response) => {
-        console.log("response: ", response);
-        console.log(response.data["user"]);
-        if (response.data["success"]) {
-          console.log("yeih");
-          this.$store.state.Usuario = response.data;
-          this.$router.push({
-            name: "Profile",
-            params: {
-              userData: response.data["user"],
-              idUser: response.data["user"]["username"],
-            },
-          });
+    ...mapActions({
+      loginUser: "auth/loginUser",
+    }),
+    async login() {
+      await this.loginUser(this.user).then(() => {
+        if (this.authUser.authenticated) {
+          this.$router.push("/profile");
+        } else {
+          // Handle error
+          this.user = {
+            username: null,
+            password: null,
+          };
         }
       });
     },
