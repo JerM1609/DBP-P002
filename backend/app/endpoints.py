@@ -43,7 +43,7 @@ s = URLSafeTimedSerializer('ClavePocoSecreta')
 mail = Mail()
 
 
-# AUXILIARY FUNCTIONS
+# AUXILIARY FUNCTIONS 
 
 GOOGLE_CLIENT_ID = '59012120039-54jvcg23a2met0bl2oheigt0sfrdn9mu.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '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'
@@ -83,29 +83,30 @@ def index():
         'success': True
     })
 
-@api.route("/log-in", methods=['POST'])
+@api.route("/login", methods=['POST'])
 def log_in():
     err_description = ""
     try:
         body = request.get_json()
         username = body.get("username", None)
         password = body.get("password", None)
-        print(username, password)
-        if username is None: 
+        
+        if username is None or password is None: 
             abort(401)
 
         usuario =  Usuario.query.filter_by(username = username).first()
-        print(f"user -> {usuario}")
-        
+
         if  usuario is not None and \
             usuario.check_password(password):
-
+            print(f"user -> {usuario}")
+            print(usuario.get_attributes())
+            print(type(usuario.get_attributes()))
             login_user(usuario, remember=True)
             return jsonify({
-                'code': 200,
                 'success': True,
-                'endpoint': '/login',
-                'method': 'GET',
+                'code': 200,
+                'endpoint': '/log-in',
+                'method': 'POST',
                 'user': usuario.get_attributes()
             })    
         else: 
@@ -113,32 +114,43 @@ def log_in():
                 err_description = "user not found"
             elif not usuario.check_password(password):
                 err_description = "incorrect password"
-
-            abort(500)
     except Exception as e:
         print(f"EXCEPTION: {e}")
-        abort(500, description=err_description)
+        if err_description == "user not found":
+            abort(403, description=err_description)
+        else:
+            abort(500, description=err_description)
 
 
 @api.route("/sign-up", methods=['POST'])
 def create_user():
     try:
         body = request.get_json()
-
+        print(body)
         username = body.get('username', None)
         email = body.get('email', None)
         password = body.get('password', None)
-        search = body.get('search', None)
-
+        print(username)
+        print(email)
+        print(password)
+        print(body.get('send',None))
         if username is None or email is None or password is None:
             abort(422)
         
+        usuario =  Usuario.query.filter_by(email = email).one_or_none()
+        if usuario is not None:
+            abort(422)
+        
+        usuario = Usuario.query.filter_by(username = username).one_or_none()
+        if usuario is not None:
+            abort(422)
+
         new_user =  Usuario(email, 
                             username, 
                             password)
         new_user_id = new_user.insert()
-
-        # login_user(new_user)
+        
+        login_user(new_user)
 
         return jsonify({
             'success': True,
@@ -151,15 +163,39 @@ def create_user():
         print(f"EXCEPTION: {e}")
         abort(500)
 
+@api.route("/user/<user_id>", methods=['DELETE'])
+def delete_user_by_id(user_id):
+    error_404 = False
+    try:
+        user = Usuario.query.filter(Usuario.email == user_id).one_or_none()
+
+        if user is None:
+            error_404 = True
+            abort(404)
+        user.delete()
+
+        return jsonify({
+            'success': True,
+            'code': 200,
+            'deleted': user_id
+            })
+    except Exception as e:
+        print(e)
+        if error_404:
+            abort(404)
+        else:
+            abort(500)
+
 @api.route("/logout", methods=['GET', 'POST'])
-@login_required
+#@login_required
 def logout():
     logout_user()
     
     return jsonify({
-            'success': True,
-            'code': 200                                    
-            }) 
+        'success': True,
+        'code': 200,
+        'endpoint': '/logout'                                    
+        }) 
 
 @api.route('/editar-perfil/', methods=['PATCH'])
 @login_required
@@ -197,9 +233,11 @@ def update_perfil():
         
         userInfo.update()
         return jsonify({
+                'code': 200,
                 'success': True,
+                'endpoint': '/editar-perfil',
                 'method': 'PATCH',
-                'id': current_user.username
+                'id': current_user.email
             })
 
     except:
@@ -207,8 +245,6 @@ def update_perfil():
             abort(404)
         else:
             abort(500)
-
-
 
 
 @api.route('/posts', methods=['GET'])
@@ -226,14 +262,14 @@ def get_posts():
     return jsonify({
         'success': True,
         'code': 200,
-        'endpoint': '/post',
+        'endpoint': '/posts',
         'method': 'GET',
         'posts': posts,
         'total_posts': len(selection)
     })
 
 @api.route("/posts", methods=['POST'])
-@login_required
+#@login_required
 def create_post():
 
     body = request.get_json()
@@ -241,17 +277,21 @@ def create_post():
     titulo = body.get('titulo', None)
     subtitulo = body.get('subtitulo', None)
     contenido = body.get('contenido', None)
-    portada = body.get('photo', None)
+    portada = body.get('portada', None)
+    id_autor = body.get('teacher_email', None)
     search = body.get('search', None)
 
     if search:
-            selection = Post.query.order_by('id').filter(Post.titulo.like('%{}%'.format(search))).all()
-            posts = paginate_items(request, selection)
-            return jsonify({
-                'success': True,
-                'posts': posts,
-                'total_posts': len(selection)
-            })
+        selection = Post.query.order_by('id').filter(Post.titulo.like('%{}%'.format(search))).all()
+        posts = paginate_items(request, selection)
+        return jsonify({
+            'code': 200,
+            'success': True,
+            'endpoint': '/posts',
+            'method': 'POST',
+            'posts': posts,
+            'total_posts': len(selection)
+        })
 
     if titulo is None or subtitulo is None or contenido is None:
         abort(422)
@@ -260,23 +300,34 @@ def create_post():
 
     try:
         img = portada
-        filename = secure_filename(img.filename)
-        print(img.filename)
+        #filename = secure_filename(img)
+        #print(img.filename)
 
         #casi seguro que el path cambia con una carpeta del front
-        img.save(os.path.join('app/static/img/portada/', filename))
+        #img.save(os.path.join('app/static/img/portada/', filename))
 
-        realname = filename.replace(' ', '_')
+        realname = img.replace(' ', '_')
 
-        post = Post(
-            id=hashlib.md5(titulo.encode()).hexdigest(),
-            titulo=titulo,
-            subtitulo=subtitulo,
-            id_autor=current_user.email,
-            fecha=datetime.now(),
-            contenido=contenido,
-            portada = realname        
-        )
+        if id_autor == None:
+            post = Post(
+                id=hashlib.md5(titulo.encode()).hexdigest(),
+                titulo=titulo,
+                subtitulo=subtitulo,
+                id_autor=current_user.email,
+                fecha=datetime.now(),
+                contenido=contenido,
+                portada = portada        
+            )
+        elif id_autor:
+            post = Post(
+                id=hashlib.md5(titulo.encode()).hexdigest(),
+                titulo=titulo,
+                subtitulo=subtitulo,
+                id_autor=id_autor,
+                fecha=datetime.now(),
+                contenido=contenido,
+                portada = portada        
+            )
 
         new_post_id = post.insert()
 
@@ -286,7 +337,7 @@ def create_post():
         return jsonify({
             'success': True,
             'code': 200,
-            'endpoint': '/post',
+            'endpoint': '/posts',
             'method': 'POST',
             'created': new_post_id,
             'posts' : current_posts,
@@ -329,15 +380,17 @@ def update_post(post_id):
         #algun update de portada?
 
         return jsonify({
-                'success': True,
-                'updated_id': post_id
-            })
+            'code': 200,
+            'success': True,
+            'endpoint': '/posts',
+            'method': 'PATCH',
+            'updated_id': post_id
+        })
     except:
-            if error_404:
-                abort(404)
-            else:
-                abort(500)
-
+        if error_404:
+            abort(404)
+        else:
+            abort(500)
 
 @api.route('/posts/<post_id>', methods=['DELETE'])
 @login_required
@@ -355,7 +408,10 @@ def delete_posts_by_id(post_id):
             posts = paginate_items(request, selection)
 
             return jsonify({
+                'code': 200,
                 'success': True,
+                'endpoint': '/posts',
+                'method': 'DELETE',
                 'deleted': post_id,
                 'post': posts,
                 'total_posts': len(selection)
@@ -366,7 +422,7 @@ def delete_posts_by_id(post_id):
             if error_404:
                 abort(404)
             else:
-                a
+                abort(500)
 
 @api.route('/cursos', methods=['GET'])
 @login_required
@@ -379,9 +435,12 @@ def get_cursos():
         abort(404)
 
     return jsonify({
+        'code': 200,
         'success': True,
+        'endpoint': '/cursos',
+        'method': 'GET',
         'cursos': cursos,
-        'total_cursos': len(cursos)
+        'total_cursos': len(selection)
     })
 
 @api.route('/cursos', methods=['POST'])
@@ -402,11 +461,14 @@ def create_cursos():
     #o por teacher nombre tmb?
     if search:
         selection = Curso.query.order_by('id').filter(Curso.titulo.like('%{}%'.format(search))).all()
-        posts = paginate_items(request, selection)
+        cursos = paginate_items(request, selection)
         return jsonify({
+            'code': 200,
             'success': True,
-            'posts': posts,
-            'total_posts': len(posts)
+            'endpoint': '/cursos',
+            'method': 'POST',
+            'cursos': cursos,
+            'total_cursos': len(selection)
         })
 
     if contenido is None or titulo is None or subtitulo is None or portada is None:
@@ -430,7 +492,10 @@ def create_cursos():
         selection = Curso.query.order_by('id').all()
         cursos = paginate_items(request, selection)
         return jsonify({
+            'code': 200,
             'success': True,
+            'endpoint': '/cursos',
+            'method': 'POST',
             'created': new_curso_id,
             'cursos': cursos,
             'total_cursos': len(selection)
@@ -466,11 +531,13 @@ def update_curso(curso_id):
 
         curso.update()
         #se rehashearia el id pq el titulo cambio?
-        #algun update de fecha?
         #algun update de portada?
 
         return jsonify({
+                'code': 200,
                 'success': True,
+                'endpoint': '/cursos',
+                'method': 'PATCH',
                 'updated_id': curso_id
             })
     except:
@@ -496,10 +563,13 @@ def delete_cursos_by_id(curso_id):
         cursos = paginate_items(request, selection)
 
         return jsonify({
+            'code': 200,
             'success': True,
+            'endpoint': '/cursos',
+            'method': 'DELETE',
             'deleted': curso_id,
-            'post': cursos,
-            'total_posts': len(selection)
+            'cursos': cursos,
+            'total_cursos': len(selection)
         })
 
     except Exception as e:
@@ -562,5 +632,3 @@ def unprocessable(error):
         'code': 422,
         'message': 'unprocessable'
     }), 422
-
-
