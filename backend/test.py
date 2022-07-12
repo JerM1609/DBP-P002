@@ -43,33 +43,29 @@ class TestApi(unittest.TestCase):
             'portada' : 'FB_faiss.png',
             'teacher_email' : 'daniel.alpd1001@gmail.com'
         }
-
+        self.cursos_edit = {            
+            'contenido': 'Aprenderemos a utilizar la indexacion de la libreria Faiss',
+            'titulo': 'Indexacion de Faiss',
+            'subtitulo' : 'Indexando con HNSW',
+            'portada' : 'FB_faiss.png'         
+        }
 
         self.posts = {            
             'contenido': 'Aprenderemos a utilizar la indexacion de la libreria Faiss',
             'titulo': 'Indexacion de Faiss',
             'subtitulo' : 'Indexando con HNSW',
-            'portada' : 'FB_faiss.png',
-            'teacher_email' : 'daniel.alpd1001@gmail.com'
+            'portada' : 'FB_faiss.png'            
+        }
+        self.posts_edit = {            
+            'contenido': 'Aprenderemos a utilizar la indexacion de la libreria Faiss',
+            'titulo': 'Indexacion de Faiss',
+            'subtitulo' : 'Indexando con HNSW',
+            'portada' : 'FB_faiss.png'            
         }
 
 
 
 #------------- Usuarios -------------------#
-    """
-    def test_get_usuarios_success(self):
-        res = self.client().post('/user', json = self.usuario)
-        data0 = json.loads(res.data)
-        
-        res = self.client().get('/user')
-        data =  json.loads(res.data)
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['users']))
-
-        # Falta eliminar  self.client().delete('/')
-    """
     
     
     def test_create_usuario(self):
@@ -88,27 +84,12 @@ class TestApi(unittest.TestCase):
         
         res = self.client().post('/logout')
         data = json.loads(res.data)        
-        
-
-        """
-        res = self.client().post('/log-in', json = self.usuario)
-        data = json.loads(res.data)        
-        print(data)
-        token = data['access_token']
-        headers={
-            "Authorization":f"Bearer {token}"
-        }
-        res = self.client().get('/posts',headers=headers)
-        data = json.loads(res.data)        
-        print(data)
-        """    
 
         
     
     def test_update_usuario(self):
         res = self.client().post('/sign-up', json = self.usuario)
         data = json.loads(res.data)        
-        #print(data)
         
         token = data['access_token']
         headers={
@@ -124,12 +105,10 @@ class TestApi(unittest.TestCase):
         res = self.client().post('/logout')
         data = json.loads(res.data)        
         
-        # Falta eliminar
 
     def test_delete_usuario(self):
         res = self.client().post('/sign-up', json = self.usuario)
         data = json.loads(res.data)        
-        #print(data)
         
         token = data['access_token']
         headers={
@@ -184,8 +163,59 @@ class TestApi(unittest.TestCase):
         res = self.client().post('/logout')
         data = json.loads(res.data)    
 
+    def test_delete_cursos(self):
+        res = self.client().post('/sign-up', json = self.usuario)
+        data = json.loads(res.data)        
+        
+        token = data['access_token']
+        headers={
+            "Authorization":f"Bearer {token}"
+        }        
+
+        res  = self.client().post('/creation_cursos', headers=headers, json = self.cursos)
+        data = json.loads(res.data)
+        id_post = data['created']
+
+        res = self.client().delete('/cursos/'+str(id_post), headers=headers)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], id_post)
+
+        res = self.client().delete('/user', headers=headers)
+        data = json.loads(res.data)        
+
+        
 
 
+        res = self.client().post('/logout')
+        data = json.loads(res.data)     
+    
+    
+    def test_update_cursos(self):
+        res = self.client().post('/sign-up', json = self.usuario)
+        data = json.loads(res.data)        
+        
+        token = data['access_token']
+        headers={
+            "Authorization":f"Bearer {token}"
+        }        
+
+        res  = self.client().post('/creation_cursos', headers=headers, json = self.posts)
+        data = json.loads(res.data)
+        id_post = data['created']
+
+        res = self.client().patch('/cursos/'+str(id_post), headers=headers, json = self.posts_edit)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['updated_id'], id_post)
+
+        res = self.client().delete('/cursos/'+str(id_post), headers=headers)
+
+
+        res = self.client().delete('/user', headers=headers)
+        res = self.client().post('/logout')
 
     def test_create_curso(self): 
         res = self.client().post('/sign-up', json = self.usuario)
@@ -248,7 +278,57 @@ class TestApi(unittest.TestCase):
         res = self.client().delete('/user', headers=headers)
         data = json.loads(res.data)        
         res = self.client().post('/logout')
-        data = json.loads(res.data)     
+        data = json.loads(res.data)    
+
+    def test_delete_posts(self):
+        res = self.client().post('/sign-up', json = self.usuario)
+        data = json.loads(res.data)        
+        
+        token = data['access_token']
+        headers={
+            "Authorization":f"Bearer {token}"
+        }        
+
+        res  = self.client().post('/creation_posts', headers=headers, json = self.posts)
+        data = json.loads(res.data)
+        id_post = data['created']
+
+        res = self.client().delete('/posts/'+str(id_post), headers=headers)
+
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], id_post)
+
+        res = self.client().delete('/user', headers=headers)
+        res = self.client().post('/logout')
+
+    def test_update_posts(self):
+        res = self.client().post('/sign-up', json = self.usuario)
+        data = json.loads(res.data)        
+        
+        token = data['access_token']
+        headers={
+            "Authorization":f"Bearer {token}"
+        }        
+
+        res  = self.client().post('/creation_posts', headers=headers, json = self.posts)
+        data = json.loads(res.data)
+        id_post = data['created']
+
+        res = self.client().patch('/posts/'+str(id_post), headers=headers, json = self.posts_edit)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['updated_id'], id_post)
+
+        res = self.client().delete('/posts/'+str(id_post), headers=headers)
+
+
+        res = self.client().delete('/user', headers=headers)
+        res = self.client().post('/logout')
+        
+
 
     
     def test_create_posts(self): 

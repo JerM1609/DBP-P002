@@ -373,9 +373,7 @@ def update_post(post_id):
             post.portada = body.get('portada')
 
         post.update()
-        #se rehashearia el id pq el titulo cambio?
-        #algun update de fecha?
-        #algun update de portada?
+
 
         return jsonify({
                 'success': True,
@@ -391,31 +389,32 @@ def update_post(post_id):
 @api.route('/posts/<post_id>', methods=['DELETE'])
 @jwt_required()
 def delete_posts_by_id(post_id):
-        error_404 = False
-        try:
-            post = Post.query.filter_by(id = post_id).one_or_none()
-            if post is None:
-                error_404 = True
-                abort(404)
+    error_404 = False
+    try:
+        post = Post.query.filter_by(id = post_id).one_or_none()
+        if post is None:
+            error_404 = True
+            abort(404)
 
-            post.delete()
+        post.delete()
 
-            selection = Post.query.order_by('id').all()
-            posts = paginate_items(request, selection)
+        selection = Post.query.order_by('id').all()
+        posts = paginate_items(request, selection)
 
-            return jsonify({
-                'success': True,
-                'deleted': post_id,
-                'post': posts,
-                'total_posts': len(selection)
-            })
+        return jsonify({
+            'success': True,
+            'code':200,
+            'deleted': post_id,
+            'post': posts,
+            'total_posts': len(selection)
+        })
 
-        except Exception as e:
-            print(e)
-            if error_404:
-                abort(404)
-            else:
-                abort(500)
+    except Exception as e:
+        print(e)
+        if error_404:
+            abort(404)
+        else:
+            abort(500)
 
 @api.route('/cursos', methods=['GET'])
 @jwt_required()
@@ -540,6 +539,7 @@ def delete_cursos_by_id(curso_id):
     try:
         curso = Curso.query.filter(Curso.id == curso_id).one_or_none()
         if curso is None:
+            print("Problema con curso delete")
             error_404 = True
             abort(404)
 
@@ -550,9 +550,10 @@ def delete_cursos_by_id(curso_id):
 
         return jsonify({
             'success': True,
+            'code':200,
             'deleted': curso_id,
-            'post': cursos,
-            'total_posts': len(selection)
+            'cursos': cursos,
+            'total_cursos': len(selection)
         })
 
     except Exception as e:
