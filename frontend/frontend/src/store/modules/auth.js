@@ -14,6 +14,12 @@ const getters = {
 };
 
 const actions = {
+  async getUserInfo(user) {
+    await authService.post("/user", user).then((response) => {
+      console.log("response: ", response);
+      return response;
+    });
+  },
   async loginUser({ commit }, user) {
     console.log("user: ", user);
     await authService.post("/log-in", user).then((response) => {
@@ -43,11 +49,12 @@ const actions = {
     let token = JSON.parse(sessionStorage.getItem(course["Id"])); //idUser
     console.log("token: ", token);
     console.log(course, token["user"]["email"]);
-    await authService
+    return await authService
       .post("/creation_cursos", { ...course, email: token["user"]["email"] })
       .then((response) => {
         console.log("response: ", response["data"]);
         commit("aux_func");
+        return response["data"];
       });
   },
   async createPost({ commit }, post) {
@@ -55,11 +62,12 @@ const actions = {
     let token = JSON.parse(sessionStorage.getItem(post["Id"])); //idUser
     console.log("token: ", token);
     console.log(post, token["user"]["email"]);
-    await authService
+    return await authService
       .post("/creation_posts", { ...post, email: token["user"]["email"] })
       .then((response) => {
         console.log("response: ", response["data"]);
         commit("aux_func");
+        return response["data"];
       });
   },
   async logoutUser({ commit }, user) {
