@@ -139,16 +139,16 @@ def log_in():
         body = request.get_json()
         email = body.get("email", None)
         password = body.get("password", None)
-        if email is None: 
+        if email is None or password is None: 
             abort(401)
 
         usuario =  Usuario.query.filter_by(email = email).first()
-        print(f"user -> {usuario}")
         
         if  usuario is not None and \
             usuario.check_password(password):
-            access_token = create_access_token(identity=usuario.email)
-            refresh_token = create_refresh_token(identity=usuario.email)
+            print(f"user -> {usuario}")
+            access_token = create_access_token(identity=usuario.get_id())
+            refresh_token = create_refresh_token(identity=usuario.get_id())
 
             response = jsonify({
                 'code': 200,
@@ -156,6 +156,7 @@ def log_in():
                 'endpoint': '/login',                
                 'access_token': access_token,
                 'method': 'GET',
+                'logged': usuario.get_id(),
                 'user': usuario.get_attributes()
             })
             set_access_cookies(response, access_token)
@@ -167,11 +168,13 @@ def log_in():
                 err_description = "user not found"
             elif not usuario.check_password(password):
                 err_description = "incorrect password"
-
             abort(500)
     except Exception as e:
         print(f"EXCEPTION: {e}")
-        abort(500, description=err_description)
+        if err_description == "user not found":
+            abort(403, description=err_description)
+        else:
+            abort(500, description=err_description)
 
 @api.route("/user", methods=['DELETE'])
 @jwt_required()
@@ -179,6 +182,7 @@ def delete_user_by_id():
     error_404 = False
     email = get_jwt_identity()
 
+    print(email)
     try:        
         user = Usuario.query.filter_by(email = email).one_or_none()
         if user is None:
@@ -372,7 +376,9 @@ def update_post(post_id):
             post.portada = body.get('portada')
 
         post.update()
-
+        #se rehashearia el id pq el titulo cambio?
+        #algun update de fecha?
+        #algun update de portada?
 
         return jsonify({
                 'success': True,
@@ -548,10 +554,9 @@ def delete_cursos_by_id(curso_id):
 
         return jsonify({
             'success': True,
-            'code':200,
             'deleted': curso_id,
-            'cursos': cursos,
-            'total_cursos': len(selection)
+            'post': cursos,
+            'total_posts': len(selection)
         })
 
     except Exception as e:

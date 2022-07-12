@@ -18,9 +18,7 @@
       </div>
 
       <div class="button">
-        <button @click="login" class="submit" type="submit">
-          Sign up here
-        </button>
+        <button @click="sign" class="submit" type="submit">Sign up here</button>
       </div>
     </form>
 
@@ -68,10 +66,10 @@ export default {
       //   }
     },
     ...mapActions({
-      loginUser: "auth/loginUser",
+      signUser: "auth/signUser",
     }),
-    async login() {
-      await this.loginUser(this.profile).then(() => {
+    async sign() {
+      await this.signUser(this.profile).then(() => {
         console.log(this.authUser);
         if (this.authUser) {
           this.$router.push({

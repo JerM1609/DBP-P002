@@ -22,7 +22,7 @@
               <!--{% if user.career is not none %}
             {{ user.career }}
             {% else %} - {% endif %}-->
-              {{ datas["code"] }}
+              {{ datas }}
             </p>
             <p>
               <!--{% if user.institute is not none %}
@@ -46,7 +46,7 @@
             <button
               type="button"
               class="btn btn-outline-primary"
-              @click="onLogOut"
+              @click="logout"
             >
               Logout
             </button>
@@ -203,6 +203,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Profile",
   data() {
@@ -210,9 +211,24 @@ export default {
       datas: null,
     };
   },
+  computed: {
+    ...mapGetters({
+      authUser: "auth/user",
+    }),
+  },
   created() {
     this.datas = JSON.parse(sessionStorage.getItem("user"));
     console.log(typeof this.datas);
+  },
+  methods: {
+    ...mapActions({
+      logoutUser: "auth/logoutUser",
+    }),
+    async logout() {
+      await this.logoutUser().then(() => {
+        this.$router.push("/");
+      });
+    },
   },
   props: {
     idUser: {

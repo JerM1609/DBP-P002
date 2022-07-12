@@ -31,7 +31,6 @@ def create_app():
 
     @app.after_request
     def after_resquest(response):
-        response.headers.add("Access-Control-Allow-Origin", "http://192.168.1.3:8080")
         response.headers.add("Access-Control-Allow-Credentials", "true")
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorizations, true')
         response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PATCH,PUT,OPTIONS')
