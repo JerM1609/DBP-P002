@@ -42,8 +42,14 @@ const mutations = {
     state.isLoggedIn = true;
     state.user = user["data"]["user"];
     state.accessToken = user["data"]["access_token"];
-    localStorage.setItem("user", JSON.stringify(user));
-    sessionStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem(
+      user["data"]["user"]["username"],
+      JSON.stringify(user)
+    );
+    sessionStorage.setItem(
+      user["data"]["user"]["username"],
+      JSON.stringify(user)
+    );
   },
   logoutUserState(state) {
     state.isLoggedIn = false;

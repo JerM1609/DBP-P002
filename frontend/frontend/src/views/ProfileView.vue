@@ -217,7 +217,7 @@ export default {
     }),
   },
   created() {
-    this.datas = JSON.parse(sessionStorage.getItem("user"));
+    this.datas = JSON.parse(sessionStorage.getItem(this.idUser));
     console.log(typeof this.datas);
   },
   methods: {
