@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import RootView from "../views/RootView.vue";
-import SignUp from "../components/SignUpForm.vue";
-import Login from "../components/LoginForm.vue";
+import SignUp from "../views/SignUp.vue";
+import Login from "../views/Login.vue";
 import Dashboard from "../views/DashboardView.vue";
 
 // URLS are mapped to the components
@@ -10,6 +10,12 @@ const routes = [
     path: "/",
     name: "RootView",
     component: RootView,
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    props: true,
+    component: Dashboard,
   },
   {
     path: "/about",
@@ -21,20 +27,17 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    props: true,
-    component: Dashboard,
+    path: "/sign-up",
+    name: "SignUp",
+    component: SignUp,
   },
   {
-    path: "/post/:slug",
-    name: "Post",
-    props: true,
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/PostView.vue"),
+    path: "/log-in",
+    name: "Login",
+    component: Login,
   },
   {
-    path: "/profile/:name",
+    path: "/profile/:idUser",
     name: "Profile",
     props: true,
     component: () =>
@@ -59,31 +62,14 @@ const routes = [
     name: "Course",
     props: true,
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/CourseView.vue"),
-  },
-  {
-    path: "/sign-up",
-    name: "SignUp",
-    component: SignUp,
-  },
-  {
-    path: "/log-in",
-    name: "Login",
-    component: Login,
+      import(/* webpackChunkName: "CourseView" */ "../views/CourseView.vue"),
   },
   {
     path: "/post/:slug",
     name: "Post",
     props: true,
     component: () =>
-      import(/* webpackChunkName: "Post" */ "../views/PostView.vue"),
-  },
-  {
-    path: "/course/:slug",
-    name: "Course",
-    props: true,
-    component: () =>
-      import(/* webpackChunkName: "Course" */ "../views/CourseView.vue"),
+      import(/* webpackChunkName: "PostView" */ "../views/PostView.vue"),
   },
 ];
 

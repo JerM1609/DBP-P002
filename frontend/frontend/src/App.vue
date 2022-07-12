@@ -1,13 +1,24 @@
-<!--
-Starting point from which all other components will be rendered
--->
 <template>
+  <TheNavigation v-if="isLoggedIn" />
   <router-view />
 </template>
 
 <script>
+import TheNavigation from "./components/TheNavigation.vue";
+
 export default {
   name: "App",
+  components: { TheNavigation },
+  computed: {
+    isLoggedIn() {
+      return (
+        this.$route.name !== "Login" &&
+        this.$route.name !== "SignUp" &&
+        this.$route.name !== "RootView" &&
+        this.$route.name !== "About"
+      );
+    },
+  },
 };
 </script>
 
