@@ -84,6 +84,7 @@ class TestApi(unittest.TestCase):
         
         res = self.client().post('/logout')
         data = json.loads(res.data)        
+        
 
         
     
