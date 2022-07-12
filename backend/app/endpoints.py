@@ -179,7 +179,6 @@ def delete_user_by_id():
     error_404 = False
     email = get_jwt_identity()
 
-    print(email)
     try:        
         user = Usuario.query.filter_by(email = email).one_or_none()
         if user is None:
@@ -539,7 +538,6 @@ def delete_cursos_by_id(curso_id):
     try:
         curso = Curso.query.filter(Curso.id == curso_id).one_or_none()
         if curso is None:
-            print("Problema con curso delete")
             error_404 = True
             abort(404)
 

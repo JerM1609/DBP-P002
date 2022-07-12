@@ -1,4 +1,3 @@
-import code
 import unittest
 from flask_jwt_extended import create_access_token
 from flask_sqlalchemy import SQLAlchemy
@@ -16,11 +15,9 @@ from app.db.database import setup_db
 class TestApi(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
-        self.app.secret_key = 'super secret key'
-        self.app.config['TESTING'] = True
-        self.client = self.app.test_client
-        self.database_name =  'dbp20_test'
-        self.database_path = 'postgresql://postgres:72869881@localhost:5432/'+ self.database_name 
+        self.client = self.app.test_client      
+        self.database_path = 'postgresql://postgres:72869881@localhost:5432/dbpv2' 
+
         setup_db(self.app, self.database_path)
         
         with self.app.app_context():
@@ -67,8 +64,10 @@ class TestApi(unittest.TestCase):
         }
 
 
-#------------- Usuarios -------------------#
 
+#------------- Usuarios -------------------#
+    
+    
     def test_create_usuario(self):
         res = self.client().post('/sign-up', json = self.usuario)
         data = json.loads(res.data)        
@@ -359,3 +358,7 @@ class TestApi(unittest.TestCase):
         res = self.client().post('/logout')
         data = json.loads(res.data)     
 
+
+
+    def tearDown(self):
+        pass
