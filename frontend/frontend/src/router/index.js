@@ -48,14 +48,14 @@ const routes = [
     name: "Create",
     props: true,
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/PostView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/FormView.vue"),
   },
   {
     path: "/edit/:slug/:Id",
     name: "Change",
     props: true,
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/FormView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/PostView.vue"),
   },
   {
     path: "/course/:slug",

@@ -301,11 +301,11 @@ def logout():
     return response
 
 @api.route("/creation_posts", methods=['POST'])
-@jwt_required()
+# @jwt_required()
 def create_post():
 
     body = request.get_json()
-    email = get_jwt_identity()
+    email = body.get('email', None)
     titulo = body.get('titulo', None)
     subtitulo = body.get('subtitulo', None)
     contenido = body.get('contenido', None)
@@ -448,11 +448,10 @@ def get_cursos():
     })
 
 @api.route('/creation_cursos', methods=['POST'])
-@jwt_required()
 def create_cursos():
-    email = get_jwt_identity()
+    
     body = request.get_json()
-
+    email = body.get('email',None)
     contenido = body.get('contenido',None)
     fecha = datetime.now()
     titulo = body.get('titulo',None)
@@ -473,7 +472,7 @@ def create_cursos():
             'total_cursos': len(posts)
         })
 
-    if contenido is None or titulo is None or subtitulo is None or portada is None:
+    if contenido is None or titulo is None or subtitulo is None:
         abort(422)
         
     #if portada is None, setear a imagen default

@@ -38,12 +38,14 @@ const actions = {
       });
   },
   //crear funciones
-  async createCourse({ commit }, course) {
-    console.log(course);
-    await authService.post("/creation_cursos", course).then((response) => {
-      console.log("response: ", response["data"]);
-      commit("setUser", response["data"]);
-    });
+  async createCourse(course) {
+    let token = JSON.parse(sessionStorage.getItem(course["Id"])); //idUser
+    console.log(course, token["user"]["email"]);
+    await authService
+      .post("/creation_cursos", { ...course, email: token["user"]["email"] })
+      .then((response) => {
+        console.log("response: ", response["data"]);
+      });
   },
   // async createPost({ commit }, user) {},
   async logoutUser({ commit }, user) {

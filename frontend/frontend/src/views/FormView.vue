@@ -97,6 +97,7 @@ export default {
         titulo: null,
         subtitulo: null,
         contenido: null,
+        Id: this.Id,
       },
       post: {
         wallpaper: null,
@@ -104,6 +105,7 @@ export default {
         subtitle: null,
         class: null,
         con: null,
+        Id: this.Id,
       },
     };
   },

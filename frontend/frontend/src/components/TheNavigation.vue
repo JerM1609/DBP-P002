@@ -12,7 +12,10 @@
             <div class="dropdown-content">
               <a v-for="route in Post" :key="route.id">
                 <router-link
-                  :to="{ name: route.name, params: { slug: route.slug } }"
+                  :to="{
+                    name: route.name,
+                    params: { slug: route.slug, Id: this.idUser },
+                  }"
                   >{{ route.description }}</router-link
                 >
               </a>
@@ -25,7 +28,10 @@
             <div class="dropdown-content">
               <a v-for="route in Course" :key="route.id">
                 <router-link
-                  :to="{ name: route.name, params: { slug: route.slug } }"
+                  :to="{
+                    name: route.name,
+                    params: { slug: route.slug, Id: this.idUser },
+                  }"
                   >{{ route.description }}</router-link
                 >
               </a>
