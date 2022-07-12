@@ -25,7 +25,7 @@ from flask_login import (
     logout_user, 
     current_user
 )
-
+from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies, JWTManager, unset_jwt_cookies
 from itsdangerous import SignatureExpired, URLSafeTimedSerializer
 from flask_mail import Mail, Message
 
@@ -82,7 +82,9 @@ def index():
     return jsonify({
         'success': True
     })
-
+@api.route("/user", methods=['GET'])
+def getter():
+    return "A"
 @api.route("/login", methods=['POST'])
 def log_in():
     err_description = ""
@@ -121,47 +123,6 @@ def log_in():
         else:
             abort(500, description=err_description)
 
-
-@api.route("/sign-up", methods=['POST'])
-def create_user():
-    try:
-        body = request.get_json()
-        print(body)
-        username = body.get('username', None)
-        email = body.get('email', None)
-        password = body.get('password', None)
-        print(username)
-        print(email)
-        print(password)
-        print(body.get('send',None))
-        if username is None or email is None or password is None:
-            abort(422)
-        
-        usuario =  Usuario.query.filter_by(email = email).one_or_none()
-        if usuario is not None:
-            abort(422)
-        
-        usuario = Usuario.query.filter_by(username = username).one_or_none()
-        if usuario is not None:
-            abort(422)
-
-        new_user =  Usuario(email, 
-                            username, 
-                            password)
-        new_user_id = new_user.insert()
-        
-        login_user(new_user)
-
-        return jsonify({
-            'success': True,
-            'code': 200,
-            'endpoint': '/sign-up',
-            'method': 'POST',
-            'created': new_user_id,
-        })
-    except Exception as e:
-        print(f"EXCEPTION: {e}")
-        abort(500)
 
 @api.route("/user/<user_id>", methods=['DELETE'])
 def delete_user_by_id(user_id):
@@ -579,6 +540,43 @@ def delete_cursos_by_id(curso_id):
         else:
             abort(500)
 
+jwt = None
+def init_jwt(app): 
+    jwt = JWTManager(app)
+
+@api.route("/sign-up", methods=['POST'])
+def create_user():
+    try:
+        body = request.get_json()
+        username = body.get('username', None)
+        email = body.get('email', None)
+        password = body.get('password', None)
+        search = body.get('search', None)
+
+        if username is None or email is None or password is None:
+            abort(422)
+        
+        new_user =  Usuario(email, 
+                            username, 
+                            password)
+        new_user_id = new_user.insert()
+        
+        access_token = create_access_token(identity=new_user.email)
+        refresh_token = create_refresh_token(identity=new_user.email)
+        
+        response = jsonify({
+                'success': True,
+                'code': 200,
+                'endpoint': '/sign-up',
+                'method': 'POST',
+                'created': new_user_id,
+            })
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+        return response
+    except Exception as e:
+        print(f"EXCEPTION: {e}")
+        abort(500)
 
 # ERROR HANDLER
 @api.errorhandler(400)
