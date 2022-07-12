@@ -17,38 +17,48 @@ const actions = {
   async loginUser({ commit }, user) {
     await authService.post("/log-in", user).then((response) => {
       console.log("response: ", response);
-      commit("setUser", response);
+      commit("setUser", response["data"]);
     });
   },
   async signUser({ commit }, user) {
     await authService.post("/sign-up", user).then((response) => {
       console.log("response: ", response);
-      commit("setUser", response);
+      commit("setUser", response["data"]);
     });
   },
-  async logoutUser({ commit }) {
+  async updateUser({ commit }, user) {
+    //corregir
+    console.log(user);
+    let token = JSON.parse(sessionStorage.getItem("antonio"));
+    token = token["access_token"];
+    await authService
+      .post("/example", {}, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        console.log("response: ", response);
+        commit("setUser", response);
+      });
+  },
+  async logoutUser({ commit }, user) {
     await authService.post("/logout");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("user");
+    localStorage.removeItem(user);
+    sessionStorage.removeItem(user);
     commit("logoutUserState");
   },
 };
 
 const mutations = {
   setUser(state, user) {
-    //user = response
     console.log("user");
     console.log(user);
     state.isLoggedIn = true;
-    state.user = user["data"]["user"];
-    state.accessToken = user["data"]["access_token"];
-    localStorage.setItem(
-      user["data"]["user"]["username"],
-      JSON.stringify(user)
-    );
+    state.user = user;
+    state.accessToken = user["access_token"];
+    console.log("access_token");
+    console.log(state.accessToken);
+    localStorage.setItem(user["user"]["username"], JSON.stringify(state.user));
     sessionStorage.setItem(
-      user["data"]["user"]["username"],
-      JSON.stringify(user)
+      user["user"]["username"],
+      JSON.stringify(state.user)
     );
   },
   logoutUserState(state) {

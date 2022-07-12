@@ -37,7 +37,12 @@
               Editar datos
             </button></a
           >-->
-            <button type="button" class="btn btn-primary">Editar datos</button>
+            <router-link
+              :to="{ name: 'Change', params: { slug: 'profile', Id: idUser } }"
+              class="btn btn-primary"
+              >Editar datos</router-link
+            >
+
             <!--<a href="../logout"
             ><button type="button" class="btn btn-outline-primary">
               Logout

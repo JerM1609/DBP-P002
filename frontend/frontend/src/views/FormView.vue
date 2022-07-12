@@ -1,85 +1,142 @@
 <template>
   <section>
-    <h1>{{ slug }}</h1>
-    <fieldset v-if="datas">
-      <form v-for="data in datas" :key="data.id">
-        <div class="sep">
-          <label :for="data.id">{{ data.name }}</label>
-          <textarea
-            :id="data.id"
-            :type="data.type"
-            v-if="data.required == true && data.class == 'textarea'"
-            required
-          />
-          <textarea
-            :id="data.id"
-            :type="data.type"
-            v-else-if="data.class == 'textarea'"
-            required
-          />
-          <input
-            :id="data.id"
-            :type="data.type"
-            v-if="data.required == true && data.class == 'input'"
-            required
-          />
-          <input
-            :id="data.id"
-            :type="data.type"
-            v-else-if="data.class == 'input'"
-          />
+    <div v-if="slug === 'profile'">
+      <form @submit.prevent="handleSubmit">
+        <label>Country :</label>
+        <input type="text" v-model.trim="profile.country" />
+
+        <label>Instituto :</label>
+        <input type="text" v-model.trim="profile.institute" />
+
+        <label>Carrera :</label>
+        <input type="text" v-model.trim="profile.carrer" />
+
+        <label>Website :</label>
+        <input type="url" v-model="profile.website" />
+
+        <label>GitHub :</label>
+        <input type="url" v-model="profile.github" />
+
+        <label>Twitter :</label>
+        <input type="url" v-model="profile.twitter" />
+
+        <label>Instagram :</label>
+        <input type="url" v-model="profile.instagram" />
+
+        <label>facebook :</label>
+        <input type="url" v-model="profile.facebook" />
+
+        <div class="button">
+          <button @click="update" class="submit" type="submit">Edit</button>
         </div>
       </form>
-    </fieldset>
-    <fieldset v-if="Id">
-      <form v-for="data in datos" :key="data.id">
-        <div v-if="data.completed" class="sep">
-          <p>{{ data.name }}</p>
-          <p>{{ data.info }}</p>
-        </div>
-        <div v-else class="sep">
-          <label :for="data.id">{{ data.name }}</label>
-          <textarea
-            :id="data.id"
-            :type="data.type"
-            v-if="data.required == true && data.class == 'textarea'"
-            required
-          />
-          <textarea
-            :id="data.id"
-            :type="data.type"
-            v-else-if="data.class == 'textarea'"
-            required
-          />
-          <input
-            :id="data.id"
-            :type="data.type"
-            v-if="data.required == true && data.class == 'input'"
-            required
-          />
-          <input
-            :id="data.id"
-            :type="data.type"
-            v-else-if="data.class == 'input'"
-          />
-        </div>
-      </form>
-    </fieldset>
+    </div>
   </section>
 </template>
 <script>
+import { mapActions, mapGetters } from "vuex";
 export default {
+  data() {
+    return {
+      profile: {
+        country: null,
+        website: null,
+        institution: null,
+        carrer: null,
+        github: null,
+        twitter: null,
+        facebook: null,
+        instagram: null,
+      },
+    };
+  },
   props: ["slug", "Id", "datas"],
+  computed: {
+    ...mapGetters({
+      authUser: "auth/user",
+    }),
+  },
+  methods: {
+    ...mapActions({
+      updateUser: "auth/updateUser",
+    }),
+    async update() {
+      await this.updateUser(this.profile).then(() => {
+        console.log(this.authUser);
+        if (this.authUser) {
+          this.$router.push({
+            name: "Profile",
+            params: {
+              idUser: this.authUser["created_username"],
+            },
+          });
+        } else {
+          // Handle error
+          this.profile = {
+            username: null,
+            password: null,
+          };
+        }
+      });
+    },
+  },
 };
 </script>
 <style scoped>
-.sep {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  font-size: larger;
-  margin-top: 3%;
-  margin-bottom: 3%;
-  padding: 5px 10px 5px 10px;
+form {
+  max-width: 600px;
+  margin: 30px auto;
+  background: #fff;
+  text-align: left;
+  padding: 20px;
+  border-radius: 10px;
+}
+label {
+  color: #aaa;
+  display: inline-block;
+  margin: 25px 0 15px;
+  text-transform: uppercase;
+}
+input,
+select {
+  display: block;
+  padding: 10px 6px;
+  width: 100%;
+  box-sizing: bordre-box;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  color: #555;
+}
+input[type="checkbox"] {
+  display: inline-block;
+  width: 16px;
+  margin: 0 10px 0;
+  position: relative;
+  top: 2px;
+}
+.pill {
+  display: inline-block;
+  margin: 20px 10px 0 0;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #eee;
+}
+button {
+  background: rgb(7, 24, 7);
+  border: 0;
+  padding: 10px 20px;
+  color: white;
+  border-radius: 20px;
+}
+.submit {
+  text-align: center;
+}
+.error {
+  color: #ff0000;
+  margin-top: 10px;
+  font-size: 0.8em;
+  font-weight: bold;
 }
 </style>

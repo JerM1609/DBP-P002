@@ -4,8 +4,6 @@ from flask_cors import CORS
 from .db.database import db, migrate
 from .config.config import Config
 from .endpoints import configure_mails, init_login, init_jwt, api as API
-from .db.database import db
-from .endpoints import configure_mails, init_login, init_jwt, api as API
 
 def create_app():
     app = Flask(__name__)

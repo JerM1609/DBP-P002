@@ -4,6 +4,7 @@ from email.message import Message
 import hashlib
 from itertools import accumulate
 import os
+from typing import Optional
 from urllib import response
 
 from flask import (
@@ -29,16 +30,13 @@ from flask_login import (
 
 from itsdangerous import SignatureExpired, URLSafeTimedSerializer
 from flask_mail import Mail, Message
-from sqlalchemy import Identity
 
 from .db.database import db
 from .db.models import Usuario, Curso, Lleva, Post
 
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt, get_jwt_identity, jwt_required, set_access_cookies, set_refresh_cookies, JWTManager, unset_jwt_cookies
-
 from . import forms 
 from werkzeug.utils import secure_filename
-
 
 
 # GLOBAL VARIABLES
@@ -47,7 +45,7 @@ s = URLSafeTimedSerializer('ClavePocoSecreta')
 mail = Mail()
 
 
-# AUXILIARY FUNCTIONS
+# AUXILIARY FUNCTIONS 
 
 GOOGLE_CLIENT_ID = '59012120039-54jvcg23a2met0bl2oheigt0sfrdn9mu.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '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'
@@ -67,9 +65,9 @@ def configure_mails(app):
     mail.init_app(app)   
 
 jwt = None
-def init_jwt(app): 
+def init_jwt(app):
     jwt = JWTManager(app)
-
+    
 # API ENDPOINTS
 ITEMS_PER_PAGE=10
 
@@ -84,69 +82,26 @@ def paginate_items(request, selection):
 
 
 # API ENDPOINTS
-
 @api.route("/", methods=['GET'])
 def index():
     return jsonify({
         'success': True
     })
 
-
-
-
-@api.route("/sign-up", methods=['POST'])
-def create_user():
-    try:
-        body = request.get_json()
-
-        username = body.get('username', None)
-        email = body.get('email', None)
-        password = body.get('password', None)
-        search = body.get('search', None)
-
-        if username is None or email is None or password is None:
-            abort(422)
-        
-        new_user =  Usuario(email, 
-                            username, 
-                            password)
-        new_user_id = new_user.insert()
-        
-        access_token = create_access_token(identity=new_user.email)
-        refresh_token = create_refresh_token(identity=new_user.email)
-        
-        response = jsonify({
-                'success': True,
-                'code': 200,
-                'endpoint': '/sign-up',                
-                'access_token': access_token,
-                'method': 'POST',
-                'created': new_user_id,
-            })
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
-
-        return response
-
-    except Exception as e:
-        print(f"EXCEPTION: {e}")
-        abort(500)
-
 @api.route("/log-in", methods=['POST'])
 def log_in():
     err_description = ""
+    body = request.get_json()
+    email = body.get("email", None)
+    password = body.get("password", None)
+    if email is None or password is None: 
+        abort(401)
+    
     try:
-        body = request.get_json()
-        email = body.get("email", None)
-        password = body.get("password", None)
-        if email is None or password is None: 
-            abort(401)
-
         usuario =  Usuario.query.filter_by(email = email).first()
         
         if  usuario is not None and \
             usuario.check_password(password):
-            print(f"user -> {usuario}")
             access_token = create_access_token(identity=usuario.get_id())
             refresh_token = create_refresh_token(identity=usuario.get_id())
 
@@ -156,12 +111,11 @@ def log_in():
                 'endpoint': '/login',                
                 'access_token': access_token,
                 'method': 'GET',
-                'logged': usuario.get_id(),
+                'logged_username': usuario.username,
                 'user': usuario.get_attributes()
             })
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
-            print(request.cookies.get('code'))
             return response
         else: 
             if usuario is None:
@@ -176,13 +130,58 @@ def log_in():
         else:
             abort(500, description=err_description)
 
+@api.route("/sign-up", methods=['POST'])
+def create_user():
+
+    body = request.get_json()
+    username = body.get('username', None)
+    email = body.get('email', None)
+    password = body.get('password', None)
+
+    if username is None or email is None or password is None:
+        abort(422)
+    try:
+
+        
+        usuario =  Usuario.query.filter_by(email = email).one_or_none()
+        
+        if usuario is not None:
+            abort(422)
+        
+        
+        new_user =  Usuario(email, 
+                            username, 
+                            password)
+        new_user_id = new_user.insert()
+        
+        access_token = create_access_token(identity=new_user_id)
+        refresh_token = create_refresh_token(identity=new_user_id)
+        
+        response = jsonify({
+                'success': True,
+                'code': 200,
+                'endpoint': '/sign-up',                
+                'access_token': access_token,
+                'method': 'POST',
+                'created': new_user_id,
+                'user': new_user.get_attributes(),
+                'created_username': new_user.username
+            })
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+        print("usuario")
+        return response
+        
+    except Exception as e:
+        print(f"EXCEPTION: {e}")
+        abort(500)
+
 @api.route("/user", methods=['DELETE'])
 @jwt_required()
 def delete_user_by_id():
     error_404 = False
     email = get_jwt_identity()
 
-    print(email)
     try:        
         user = Usuario.query.filter_by(email = email).one_or_none()
         if user is None:
@@ -200,15 +199,20 @@ def delete_user_by_id():
             abort(404)
         else:
             abort(500)
-
-
-@api.route('/editar-perfil', methods=['PATCH'])
+@api.route("/example", methods=['POST'])
 @jwt_required()
+def wbada():
+    print("A")
+    return 200
+
+@api.route('/editar-perfil/', methods=['PATCH'])
+@jwt_required(optional=True)
 def update_perfil():
+    print("A")
     error_404 = False
     try: 
         email = get_jwt_identity()
-        print("llega")
+        print(email)
         userInfo= Usuario.query.filter_by(email = email).one_or_none()
         
         if userInfo is None: 
@@ -239,13 +243,11 @@ def update_perfil():
             userInfo.photo = body.get('photo')
         
         userInfo.update()
-        response = jsonify({
-                'code': 200,
+        return jsonify({
                 'success': True,
-                'endpoint': '/editar-perfil',
+                'code': 200,
                 'method': 'PATCH',
-                'logged': userInfo.get_id(),
-                'user': userInfo.get_attributes()
+                'created': email
             })
 
     except:
@@ -253,7 +255,6 @@ def update_perfil():
             abort(404)
         else:
             abort(500)
-
 
 @api.route('/posts', methods=['GET'])
 @jwt_required()
@@ -284,13 +285,6 @@ def logout():
             })
     unset_jwt_cookies(response)
     return response
-
-
-
-
-
-
-
 
 @api.route("/creation_posts", methods=['POST'])
 @jwt_required()
@@ -417,8 +411,7 @@ def delete_posts_by_id(post_id):
             'total_posts': len(selection)
         })
 
-    except Exception as e:
-        print(e)
+    except Exception as e:        
         if error_404:
             abort(404)
         else:
@@ -563,7 +556,6 @@ def delete_cursos_by_id(curso_id):
         })
 
     except Exception as e:
-        print(e)
         if error_404:
             abort(404)
         else:
@@ -578,6 +570,15 @@ def not_found(error):
         'code': 400,
         'message': 'bad request'
     }), 400
+
+@api.errorhandler(401)
+def not_found(error):
+    return jsonify({
+        'success': False,
+        'code': 401,
+        'message': 'Unauthorized'
+    }), 401
+
 
 
 @api.errorhandler(403)
@@ -622,5 +623,3 @@ def unprocessable(error):
         'code': 422,
         'message': 'unprocessable'
     }), 422
-
-
