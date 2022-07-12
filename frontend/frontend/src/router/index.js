@@ -55,7 +55,7 @@ const routes = [
     name: "Change",
     props: true,
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/PostView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/FormView.vue"),
   },
   {
     path: "/course/:slug",
