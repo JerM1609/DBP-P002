@@ -11,9 +11,6 @@
         <button type="submit">Log in</button>
       </div>
     </form>
-
-    <p>UsernameA: {{ profile.email }}</p>
-    <p>Password: {{ profile.password }}</p>
   </div>
 </template>
 

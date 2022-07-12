@@ -4,19 +4,20 @@
       <h1 v-if="slug === 'mypost'">My posts</h1>
       <h1 v-else-if="slug === 'post'">Post of the comunity</h1>
       <div v-if="slug === 'mypost'" class="posts">
-        <div class="publication">
+        <div class="publication" v-for="post in my_post" :key="post.id">
           <div class="content">
-            <h2><a href="#">as</a></h2>
+            <h2>
+              <a href="#">{{ post["titulo"] }}</a>
+            </h2>
             <p>
-              <!-- {{ this.my_post }} -->
+              {{ post["contenido"] }}
             </p>
           </div>
           <div class="edition">
-            <router-link
-              :to="{ name: 'Change', params: { slug: slug, Id: 1 } }"
-              class="btn btn-primary"
-              >Edit</router-link
-            >
+            <p>
+              {{ post["fecha"] }}
+            </p>
+
           </div>
         </div>
         <!--
@@ -34,7 +35,7 @@
       </div>
       --></div>
       <div v-else-if="slug === 'post'" class="posts">
-        <div class="publication">
+        <div class="publication" v-for="post in other_post" :key="post.id">
           <div>
             <h2><a href="#">as</a></h2>
             <p>
@@ -119,10 +120,10 @@ export default {
         });
       this.other_posts = op;
     },
-    created() {
-      this.myPost();
-      this.otherPost();
-    },
+  },
+  created() {
+    this.myPost();
+    this.otherPost();
   },
 };
 </script>
