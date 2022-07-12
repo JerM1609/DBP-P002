@@ -38,24 +38,29 @@ const actions = {
       });
   },
   //crear funciones
-  async createCourse(course) {
+  async createCourse({ commit }, course) {
+    console.log(course["Id"]);
     let token = JSON.parse(sessionStorage.getItem(course["Id"])); //idUser
+    console.log("token: ", token);
     console.log(course, token["user"]["email"]);
     await authService
       .post("/creation_cursos", { ...course, email: token["user"]["email"] })
       .then((response) => {
         console.log("response: ", response["data"]);
+        commit("aux_func");
       });
   },
-  async createPost(post) {
+  async createPost({ commit }, post) {
+    console.log(post["Id"]);
     let token = JSON.parse(sessionStorage.getItem(post["Id"])); //idUser
-    console.log(token);
-
-    // await authService
-    //   .post("/creation_post", { ...post, email: token["user"]["email"] })
-    //   .then((response) => {
-    //     console.log("response: ", response["data"]);
-    //   });
+    console.log("token: ", token);
+    console.log(post, token["user"]["email"]);
+    await authService
+      .post("/creation_posts", { ...post, email: token["user"]["email"] })
+      .then((response) => {
+        console.log("response: ", response["data"]);
+        commit("aux_func");
+      });
   },
   async logoutUser({ commit }, user) {
     await authService.post("/logout");
@@ -83,6 +88,9 @@ const mutations = {
   logoutUserState(state) {
     state.isLoggedIn = false;
     state.user = {};
+  },
+  aux_func() {
+    return;
   },
 };
 

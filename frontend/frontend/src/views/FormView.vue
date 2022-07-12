@@ -140,6 +140,7 @@ export default {
       });
     },
     async createC() {
+      console.log("course: ", this.course);
       await this.createCourse(this.course).then(() => {
         console.log("done");
         // console.log("a", this.authUser);

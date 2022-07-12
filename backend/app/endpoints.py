@@ -332,7 +332,10 @@ def create_post():
         
         # realname = filename.replace(' ', '_')
         realname = portada
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5525e45
         post = Post(
             id=hashlib.md5(titulo.encode()).hexdigest(),
             titulo=titulo,
