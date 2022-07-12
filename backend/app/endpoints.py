@@ -271,11 +271,10 @@ def update_perfil():
             abort(500)
 
 @api.route('/posts', methods=['GET'])
-@jwt_required()
 def get_posts():
-    idd = get_jwt_identity()
     selection = Post.query.all()
-    posts = paginate_items(request, selection)
+    posts = [item.get_attributes() for item in selection]
+    
     if len(posts) == 0:
         abort(404)
     #deberia ser abort? o mas bien enviar lista vacia y que el 
@@ -285,7 +284,6 @@ def get_posts():
         'code': 200,
         'endpoint': '/post',
         'method': 'GET',
-        'current_user': idd,
         'posts': posts,
         'total_posts': len(selection)
     })

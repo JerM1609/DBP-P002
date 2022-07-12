@@ -8,10 +8,7 @@
           <div class="content">
             <h2><a href="#">as</a></h2>
             <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-              Excepturi nemo impedit animi suscipit. Obcaecati asperiores atque
-              perspiciatis culpa fugiat? Nulla porro rerum ducimus quisquam!
-              Accusantium asperiores fugit quod explicabo nobis.
+              <!-- {{ this.my_post }} -->
             </p>
           </div>
           <div class="edition">
@@ -41,10 +38,7 @@
           <div>
             <h2><a href="#">as</a></h2>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi
-              similique quisquam necessitatibus quod quae ratione incidunt!
-              Dolore dolor, beatae, tempora quis similique perferendis labore
-              natus eum corrupti qui, nihil sunt.
+              <!-- {{ this.other_posts }} -->
             </p>
           </div>
         </div>
@@ -66,8 +60,70 @@
   </section>
 </template>
 <script>
+import axios from "axios";
+
 export default {
   props: ["slug", "datas"],
+  //falta el fetch delete()
+  data() {
+    return {
+      idUser: sessionStorage.key(0),
+      my_post: {
+        type: Array,
+      },
+      other_posts: {
+        type: Array,
+      },
+    };
+  },
+  methods: {
+    myPost() {
+      let obj = JSON.parse(sessionStorage.getItem(this.idUser));
+      console.log(obj);
+      let id_post = obj["user"]["email"];
+      let mp = [];
+      const path = "http://127.0.0.1:5001/posts";
+      axios
+        .get(path)
+        .then((res) => {
+          console.log(res);
+          res.data["posts"].forEach((element) => {
+            if (element["id_autor"] === id_post) {
+              mp.push(element);
+            }
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      this.my_post = mp;
+    },
+    otherPost() {
+      let obj = JSON.parse(sessionStorage.getItem(this.idUser));
+      console.log(obj);
+      let id_post = obj["user"]["email"];
+      let op = [];
+      const path = "http://127.0.0.1:5001/posts";
+      axios
+        .get(path)
+        .then((res) => {
+          console.log(res);
+          res.data["posts"].forEach((element) => {
+            if (element["id_autor"] !== id_post) {
+              op.push(element);
+            }
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      this.other_posts = op;
+    },
+    created() {
+      this.myPost();
+      this.otherPost();
+    },
+  },
 };
 </script>
 
