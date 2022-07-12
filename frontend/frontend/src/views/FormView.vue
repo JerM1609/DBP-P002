@@ -141,14 +141,15 @@ export default {
     },
     async createC() {
       console.log("course: ", this.course);
-      await this.createCourse(this.course).then(() => {
-        console.log("done");
-        // console.log("a", this.authUser);
+      await this.createCourse(this.course).then((response) => {
+        console.log("respuesta curso con created");
+        console.log(response);
+        console.log(this.authUser);
         if (this.authUser) {
           this.$router.push({
             name: "Course",
             params: {
-              slug: "mycourse",
+              slug: response["created"],
             },
           });
         } else {
@@ -161,8 +162,25 @@ export default {
       });
     },
     async createP() {
-      await this.createPost(this.post).then(() => {
-        console.log("done");
+      console.log("post", this.post);
+      await this.createPost(this.post).then((response) => {
+        console.log("respuesta post con created");
+        console.log(response);
+        console.log(this.authUser);
+        if (this.authUser) {
+          this.$router.push({
+            name: "Post",
+            params: {
+              slug: response["created"],
+            },
+          });
+        } else {
+          // Handle error
+          this.profile = {
+            username: null,
+            password: null,
+          };
+        }
       });
     },
   },
