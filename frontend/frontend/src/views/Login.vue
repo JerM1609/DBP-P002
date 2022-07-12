@@ -1,7 +1,7 @@
 <template>
   <div>
     <form @submit.prevent="login">
-      <label>Username :</label>
+      <label>Email :</label>
       <input type="username" v-model.trim="profile.email" required />
 
       <label>Password :</label>

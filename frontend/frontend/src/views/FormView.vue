@@ -31,7 +31,49 @@
         </div>
       </form>
     </div>
-    <div v-if="slug === ''"></div>
+    <div v-if="slug === 'course'">
+      <form @submit.prevent="handleSubmit">
+        <!-- <label>Portada :</label>
+        <input type="file" /> -->
+
+        <label>Titulo :</label>
+        <input type="text" v-model="course.titulo" />
+
+        <label>Subtitulo :</label>
+        <input type="text" v-model="course.subtitulo" />
+
+        <label>Contenido :</label>
+        <textarea v-model="course.contenido"></textarea>
+
+        <div class="button">
+          <button @click="createC" class="submit" type="submit">Create</button>
+        </div>
+      </form>
+    </div>
+    <div v-if="slug === 'post'">
+      <form @submit.prevent="handleSubmit">
+        <label>Portada :</label>
+        <input type="file" />
+
+        <label>Titulo :</label>
+        <input type="text" v-model="post.title" />
+
+        <label>Subtitulo :</label>
+        <input type="text" v-model="post.subtitle" />
+
+        <label>Clase :</label>
+        <input type="text" v-model="post.class" />
+
+        <label>Contenido :</label>
+        <textarea v-model="post.content"></textarea>
+
+        <div class="button">
+          <button @click="createPost" class="submit" type="submit">
+            Create
+          </button>
+        </div>
+      </form>
+    </div>
   </section>
 </template>
 <script>
@@ -49,6 +91,19 @@ export default {
         facebook: null,
         instagram: null,
       },
+      course: {
+        portada: null,
+        titulo: null,
+        subtitulo: null,
+        contenido: null,
+      },
+      post: {
+        wallpaper: null,
+        title: null,
+        subtitle: null,
+        class: null,
+        con: null,
+      },
     };
   },
   props: ["slug", "Id", "datas"],
@@ -60,6 +115,8 @@ export default {
   methods: {
     ...mapActions({
       updateUser: "auth/updateUser",
+      createCourse: "auth/createCourse",
+      createPost: "auth/createPost",
     }),
     async update() {
       await this.updateUser(this.profile).then(() => {
@@ -80,6 +137,19 @@ export default {
         }
       });
     },
+    async createC() {
+      await this.createCourse(this.course).then(() => {
+        console.log("done");
+        // console.log("a", this.authUser);
+      });
+    },
+    async createPost() {
+      console.log(this.post.wallpaper);
+      console.log(this.post.title);
+      console.log(this.post.subtitle);
+      console.log(this.post.class);
+      console.log(this.post.content);
+    },
   },
 };
 </script>
@@ -99,6 +169,7 @@ label {
   text-transform: uppercase;
 }
 input,
+textarea,
 select {
   display: block;
   padding: 10px 6px;

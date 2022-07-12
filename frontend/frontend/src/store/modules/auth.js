@@ -15,6 +15,7 @@ const getters = {
 
 const actions = {
   async loginUser({ commit }, user) {
+    console.log("user: ", user);
     await authService.post("/log-in", user).then((response) => {
       console.log("response: ", response);
       commit("setUser", response["data"]);
@@ -38,6 +39,14 @@ const actions = {
       });
   },
   //crear funciones
+  async createCourse({ commit }, course) {
+    console.log(course);
+    await authService.post("/creation_cursos", course).then((response) => {
+      console.log("response: ", response["data"]);
+      commit("setUser", response["data"]);
+    });
+  },
+  // async createPost({ commit }, user) {},
   async logoutUser({ commit }, user) {
     await authService.post("/logout");
     localStorage.removeItem(user);
