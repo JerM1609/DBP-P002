@@ -309,7 +309,7 @@ def create_post():
     titulo = body.get('titulo', None)
     subtitulo = body.get('subtitulo', None)
     contenido = body.get('contenido', None)
-    portada = body.get('portada', None)
+    portada = body.get('portada', "")
     search = body.get('search', None)
 
     if search:
@@ -327,10 +327,11 @@ def create_post():
     #if portada is None: set portada a imagen por default/vacio
 
     try:
-        img = portada
-        filename = secure_filename(img)
+        # img = portada
+        # filename = secure_filename(img)
         
-        realname = filename.replace(' ', '_')
+        # realname = filename.replace(' ', '_')
+        realname = portada
         post = Post(
             id=hashlib.md5(titulo.encode()).hexdigest(),
             titulo=titulo,

@@ -56,21 +56,19 @@
         <input type="file" />
 
         <label>Titulo :</label>
-        <input type="text" v-model="post.title" />
+        <input type="text" v-model="post.titulo" />
 
         <label>Subtitulo :</label>
-        <input type="text" v-model="post.subtitle" />
+        <input type="text" v-model="post.subtitulo" />
 
         <label>Clase :</label>
-        <input type="text" v-model="post.class" />
+        <input type="text" v-model="post.clase" />
 
         <label>Contenido :</label>
-        <textarea v-model="post.content"></textarea>
+        <textarea v-model="post.contenido"></textarea>
 
         <div class="button">
-          <button @click="createPost" class="submit" type="submit">
-            Create
-          </button>
+          <button @click="createP" class="submit" type="submit">Create</button>
         </div>
       </form>
     </div>
@@ -101,10 +99,10 @@ export default {
       },
       post: {
         wallpaper: null,
-        title: null,
-        subtitle: null,
-        class: null,
-        con: null,
+        titulo: null,
+        subtitulo: null,
+        clase: null,
+        contenido: null,
         Id: this.Id,
       },
     };
@@ -142,17 +140,17 @@ export default {
       });
     },
     async createC() {
+      console.log("course: ", this.course);
       await this.createCourse(this.course).then(() => {
         console.log("done");
         // console.log("a", this.authUser);
       });
     },
-    async createPost() {
-      console.log(this.post.wallpaper);
-      console.log(this.post.title);
-      console.log(this.post.subtitle);
-      console.log(this.post.class);
-      console.log(this.post.content);
+    async createP() {
+      await this.createPost(this.post).then(() => {
+        console.log("done");
+        // console.log("a", this.authUser);
+      });
     },
   },
 };
