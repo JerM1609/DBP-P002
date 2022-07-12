@@ -209,6 +209,7 @@ export default {
   data() {
     return {
       datas: null,
+      owner: true,
     };
   },
   computed: {
@@ -217,8 +218,15 @@ export default {
     }),
   },
   created() {
-    this.datas = JSON.parse(sessionStorage.getItem(this.idUser));
+    if(sessionStorage.getItem(this.idUser) != null){
+      this.datas = JSON.parse(sessionStorage.getItem(this.idUser));
+    }
+    else{
+      this.owner = false;
+      //funcion get user from database
+    }
     console.log(typeof this.datas);
+
   },
   methods: {
     ...mapActions({
