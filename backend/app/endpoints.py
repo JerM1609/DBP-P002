@@ -78,7 +78,7 @@ def paginate_items(request, selection):
 
     items = [item.get_attributes() for item in selection]
     current_items = items[start:end]
-    return current_items
+    return items
 
 
 # API ENDPOINTS
@@ -433,11 +433,10 @@ def delete_posts_by_id(post_id):
             abort(500)
 
 @api.route('/cursos', methods=['GET'])
-@jwt_required()
 def get_cursos():
 
     selection = Curso.query.order_by('id').all()
-    cursos = paginate_items(request, selection)
+    cursos = [item.get_attributes() for item in selection]
 
     if len(cursos) == 0:
         abort(404)
