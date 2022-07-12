@@ -112,6 +112,7 @@ def log_in():
                 'access_token': access_token,
                 'method': 'GET',
                 'logged_username': usuario.username,
+                'username': usuario.username,
                 'user': usuario.get_attributes()
             })
             set_access_cookies(response, access_token)
@@ -165,7 +166,8 @@ def create_user():
                 'method': 'POST',
                 'created': new_user_id,
                 'user': new_user.get_attributes(),
-                'created_username': new_user.username
+                'created_username': new_user.username,
+                'username': new_user.username
             })
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
