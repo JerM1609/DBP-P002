@@ -236,7 +236,7 @@ export default {
       logoutUser: "auth/logoutUser",
     }),
     async logout() {
-      await this.logoutUser().then(() => {
+      await this.logoutUser(this.idUser).then(() => {
         this.$router.push("/");
       });
     },
