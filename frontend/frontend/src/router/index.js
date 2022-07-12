@@ -44,7 +44,7 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/ProfileView.vue"),
   },
   {
-    path: "/create/:slug",
+    path: "/create/:slug", //post, course
     name: "Create",
     props: true,
     component: () =>

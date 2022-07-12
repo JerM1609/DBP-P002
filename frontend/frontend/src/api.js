@@ -2,7 +2,9 @@ import axios from "axios";
 
 const authService = axios.create({
   baseURL: "http://127.0.0.1:5001",
-  withCredentials: true,
+  xhrFields: {
+    withCredentials: true,
+  },
   xsrfCookieName: "X-CSRF-TOKEN-ACCESS",
   headers: {
     Accept: "application/json",

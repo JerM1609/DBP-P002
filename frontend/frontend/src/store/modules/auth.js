@@ -26,18 +26,18 @@ const actions = {
       commit("setUser", response["data"]);
     });
   },
-  async updateUser({ commit }, user) {
-    //corregir
+  async updateUser({ commit }, user /*var*/) {
     console.log(user);
-    let token = JSON.parse(sessionStorage.getItem("antonio"));
-    token = token["access_token"];
+    let token = JSON.parse(sessionStorage.getItem("antonio")); //idUser
+    token = token["user"];
     await authService
-      .post("/example", {}, { headers: { Authorization: `Bearer ${token}` } })
+      .patch("/editar-perfil/", { antigua: token, nueva: user })
       .then((response) => {
-        console.log("response: ", response);
-        commit("setUser", response);
+        console.log("response: ", response["data"]);
+        commit("setUser", response["data"]);
       });
   },
+  //crear funciones
   async logoutUser({ commit }, user) {
     await authService.post("/logout");
     localStorage.removeItem(user);
@@ -55,7 +55,7 @@ const mutations = {
     state.accessToken = user["access_token"];
     console.log("access_token");
     console.log(state.accessToken);
-    localStorage.setItem(user["user"]["username"], JSON.stringify(state.user));
+    localStorage.setItem(user["user"]["username"], JSON.stringify(state.user)); //se puede ovbiar
     sessionStorage.setItem(
       user["user"]["username"],
       JSON.stringify(state.user)

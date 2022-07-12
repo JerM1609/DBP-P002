@@ -199,57 +199,69 @@ def delete_user_by_id():
             abort(404)
         else:
             abort(500)
-@api.route("/example", methods=['POST'])
+@api.route("/example", methods=['GET'])
 @jwt_required()
 def wbada():
     print("A")
     return 200
 
 @api.route('/editar-perfil/', methods=['PATCH'])
-@jwt_required(optional=True)
 def update_perfil():
-    print("A")
     error_404 = False
-    try: 
-        email = get_jwt_identity()
-        print(email)
+    try:
+        body = request.get_json() 
+        antigua_data = body.get('antigua')
+        nueva_data= body.get('nueva')
+        email=antigua_data.get('email')
         userInfo= Usuario.query.filter_by(email = email).one_or_none()
+        access_token = create_access_token(identity=userInfo.get_id())
+        refresh_token = create_refresh_token(identity=userInfo.get_id())
         
         if userInfo is None: 
             error_404 = True
             abort(404)
-        body = request.get_json()
+        
 
-        if 'country' in body: 
-            userInfo.country = body.get('country')
-        if 'institute' in body: 
-            userInfo.institute = body.get('institute')
-        if 'career' in body: 
-            userInfo.career = body.get('career')
+        if 'country' in nueva_data: 
+            userInfo.country = nueva_data.get('country')
+        if 'institute' in nueva_data: 
+            userInfo.institute = nueva_data.get('institute')
+        if 'career' in nueva_data: 
+            userInfo.career = nueva_data.get('career')
 
 
-        if 'website' in body: 
-            userInfo.website = body.get('website')
-        if 'github' in body: 
-            userInfo.github = body.get('github')                    
-        if 'twitter' in body: 
-            userInfo.twitter = body.get('twitter')            
-        if 'instagram' in body: 
-            userInfo.instagram = body.get('instagram')            
-        if 'facebook' in body: 
-            userInfo.facebook = body.get('facebook')            
+        if 'website' in nueva_data: 
+            userInfo.website = nueva_data.get('website')
+        if 'github' in nueva_data: 
+            userInfo.github = nueva_data.get('github')                    
+        if 'twitter' in nueva_data: 
+            userInfo.twitter = nueva_data.get('twitter')            
+        if 'instagram' in nueva_data: 
+            userInfo.instagram = nueva_data.get('instagram')            
+        if 'facebook' in nueva_data: 
+            userInfo.facebook = nueva_data.get('facebook')            
 
-        if 'photo' in body:
-            userInfo.photo = body.get('photo')
+        if 'photo' in nueva_data:
+            userInfo.photo = nueva_data.get('photo')
+        
         
         userInfo.update()
-        return jsonify({
-                'success': True,
+        userInfo= Usuario.query.filter_by(email = email).one_or_none()
+        print(userInfo.username)
+        response = jsonify({
                 'code': 200,
+                'success': True,
+                'endpoint': '/editar-perfil',                
+                'access_token': access_token,
                 'method': 'PATCH',
+                'username': userInfo.username,
+                'user': userInfo.get_attributes(),
                 'created': email
             })
-
+        print("a")
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+        return response
     except:
         if error_404:
             abort(404)

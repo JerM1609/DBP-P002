@@ -22,13 +22,13 @@
               <!--{% if user.career is not none %}
             {{ user.career }}
             {% else %} - {% endif %}-->
-              {{ datas }}
+              {{ datas["user"]["career"] }}
             </p>
             <p>
               <!--{% if user.institute is not none %}
             {{ user.institute }}
             {% else %} - {% endif %}-->
-              a
+              {{ datas["user"]["institute"] }}
             </p>
           </div>
           <div class="botones" v-if="this.owner">
@@ -64,7 +64,7 @@
               <!--{% if user.website is not none %}
             <a href="{{user.website}}">{{ user.website }}</a>
             {% else %} - {% endif %}-->
-              a
+              {{ datas["user"]["website"] }}
             </p>
           </div>
           <hr width="100%" size="2px" />
@@ -77,7 +77,7 @@
               idGithub
             }}</a>
             {% else %} - {% endif %}-->
-              a
+              {{ datas["user"]["github"] }}
             </p>
           </div>
           <hr width="100%" size="2px" />
@@ -90,7 +90,7 @@
               idTwitter
             }}</a>
             {% else %} - {% endif %}-->
-              a
+              {{ datas["user"]["twitter"] }}
             </p>
           </div>
           <hr width="100%" size="2px" />
@@ -103,7 +103,7 @@
               idInstagram
             }}</a>
             {% else %} - {% endif %}-->
-              a
+              {{ datas["user"]["instagram"] }}
             </p>
           </div>
           <hr width="100%" size="2px" />
@@ -116,7 +116,7 @@
               idFB
             }}</a>
             {% else %} - {% endif %}-->
-              a
+              {{ datas["user"]["facebook"] }}
             </p>
           </div>
         </div>
@@ -127,7 +127,7 @@
             <p class="dataname"><strong>Username</strong></p>
             <p class="data2">
               <!--{{ user.username }}--->
-              a
+              {{ datas["user"]["username"] }}
             </p>
           </div>
           <hr width="100%" size="2px" />
@@ -135,7 +135,7 @@
             <p class="dataname"><strong>Email</strong></p>
             <p class="data2">
               <!--{{ user.email }}-->
-              a
+              {{ datas["user"]["email"] }}
             </p>
           </div>
           <hr width="100%" size="2px" />
@@ -145,7 +145,7 @@
               <!--{% if user.country is not none %}
             {{ user.country }}
             {% else %} - {% endif %}-->
-              a
+              {{ datas["user"]["country"] }}
             </p>
           </div>
           <hr width="100%" size="2px" />
@@ -155,7 +155,7 @@
               <!--{% if user.institute is not none %}
             {{ user.institute }}
             {% else %} - {% endif %}-->
-              a
+              {{ datas["user"]["institute"] }}
             </p>
           </div>
         </div>

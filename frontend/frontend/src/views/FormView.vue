@@ -3,13 +3,13 @@
     <div v-if="slug === 'profile'">
       <form @submit.prevent="handleSubmit">
         <label>Country :</label>
-        <input type="text" v-model.trim="profile.country" />
+        <input type="text" v-model="profile.country" />
 
         <label>Instituto :</label>
-        <input type="text" v-model.trim="profile.institute" />
+        <input type="text" v-model="profile.institute" />
 
         <label>Carrera :</label>
-        <input type="text" v-model.trim="profile.carrer" />
+        <input type="text" v-model="profile.career" />
 
         <label>Website :</label>
         <input type="url" v-model="profile.website" />
@@ -31,6 +31,7 @@
         </div>
       </form>
     </div>
+    <div v-if="slug === ''"></div>
   </section>
 </template>
 <script>
@@ -42,7 +43,7 @@ export default {
         country: null,
         website: null,
         institution: null,
-        carrer: null,
+        career: null,
         github: null,
         twitter: null,
         facebook: null,
@@ -62,12 +63,12 @@ export default {
     }),
     async update() {
       await this.updateUser(this.profile).then(() => {
-        console.log(this.authUser);
+        console.log("a", this.authUser);
         if (this.authUser) {
           this.$router.push({
             name: "Profile",
             params: {
-              idUser: this.authUser["created_username"],
+              idUser: this.authUser["username"],
             },
           });
         } else {
