@@ -202,12 +202,13 @@ def delete_user_by_id():
             abort(500)
 
 
-@api.route('/editar-perfil/', methods=['PATCH'])
+@api.route('/editar-perfil', methods=['PATCH'])
 @jwt_required()
 def update_perfil():
     error_404 = False
     try: 
         email = get_jwt_identity()
+        print("llega")
         userInfo= Usuario.query.filter_by(email = email).one_or_none()
         
         if userInfo is None: 
@@ -238,11 +239,13 @@ def update_perfil():
             userInfo.photo = body.get('photo')
         
         userInfo.update()
-        return jsonify({
-                'success': True,
+        response = jsonify({
                 'code': 200,
+                'success': True,
+                'endpoint': '/editar-perfil',
                 'method': 'PATCH',
-                'created': email
+                'logged': userInfo.get_id(),
+                'user': userInfo.get_attributes()
             })
 
     except:

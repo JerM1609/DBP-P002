@@ -16,7 +16,7 @@ class TestApi(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
         self.client = self.app.test_client      
-        self.database_path = 'postgresql://postgres:72869881@localhost:5432/dbpv2' 
+        self.database_path = 'postgresql://postgres:1234@localhost:5432/dbp20_test' 
 
         setup_db(self.app, self.database_path)
         
