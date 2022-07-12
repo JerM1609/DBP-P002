@@ -15,7 +15,6 @@
             <figcaption class="Nombre">
               <!--<h2>{{ user.username }}</h2>-->
               <!--{{ this.userData }}-->
-              {{ $ }}
             </figcaption>
           </figure>
           <div class="datos">
@@ -23,7 +22,7 @@
               <!--{% if user.career is not none %}
             {{ user.career }}
             {% else %} - {% endif %}-->
-              a
+              {{ datas["code"] }}
             </p>
             <p>
               <!--{% if user.institute is not none %}
@@ -206,13 +205,18 @@
 <script>
 export default {
   name: "Profile",
+  data() {
+    return {
+      datas: null,
+    };
+  },
+  created() {
+    this.datas = JSON.parse(sessionStorage.getItem("user"));
+    console.log(typeof this.datas);
+  },
   props: {
     idUser: {
       type: String,
-      required: true,
-    },
-    userData: {
-      type: Object,
       required: true,
     },
   },

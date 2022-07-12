@@ -74,7 +74,12 @@ export default {
       await this.loginUser(this.profile).then(() => {
         console.log(this.authUser);
         if (this.authUser) {
-          this.$router.push("/profile");
+          this.$router.push({
+            name: "Profile",
+            params: {
+              idUser: this.authUser["created"],
+            },
+          });
         } else {
           // Handle error
           this.user = {
