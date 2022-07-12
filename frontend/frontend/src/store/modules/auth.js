@@ -47,7 +47,16 @@ const actions = {
         console.log("response: ", response["data"]);
       });
   },
-  // async createPost({ commit }, user) {},
+  async createPost(post) {
+    let token = JSON.parse(sessionStorage.getItem(post["Id"])); //idUser
+    console.log(token);
+
+    // await authService
+    //   .post("/creation_post", { ...post, email: token["user"]["email"] })
+    //   .then((response) => {
+    //     console.log("response: ", response["data"]);
+    //   });
+  },
   async logoutUser({ commit }, user) {
     await authService.post("/logout");
     localStorage.removeItem(user);
