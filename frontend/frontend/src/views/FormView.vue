@@ -48,6 +48,7 @@ export default {
         twitter: null,
         facebook: null,
         instagram: null,
+        Id: this.Id,
       },
     };
   },
@@ -62,6 +63,7 @@ export default {
       updateUser: "auth/updateUser",
     }),
     async update() {
+      console.log(this.profile.Id);
       await this.updateUser(this.profile).then(() => {
         console.log("a", this.authUser);
         if (this.authUser) {
