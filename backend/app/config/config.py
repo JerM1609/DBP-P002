@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config():
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:72869881@localhost:5432/dbp20' 
+    SQLALCHEMY_DATABASE_URI = os.getenv("PSQL_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     SECRET_KEY = "clave secreta"

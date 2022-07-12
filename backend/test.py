@@ -19,8 +19,8 @@ class TestApi(unittest.TestCase):
         self.app.secret_key = 'super secret key'
         self.app.config['TESTING'] = True
         self.client = self.app.test_client
-        self.database_name =  'db_test'
-        self.database_path = 'postgresql://postgres:27112001dg@localhost:5432/'+ self.database_name
+        self.database_name =  'dbp20_test'
+        self.database_path = 'postgresql://postgres:1234@localhost:5432/'+ self.database_name
         setup_db(self.app, self.database_path)
         
         with self.app.app_context():
