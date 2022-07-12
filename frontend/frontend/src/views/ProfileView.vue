@@ -31,7 +31,7 @@
               a
             </p>
           </div>
-          <div class="botones">
+          <div class="botones" v-if="this.owner">
             <!--<a href="/editar-perfil/"
             ><button type="button" class="btn btn-primary">
               Editar datos
@@ -218,15 +218,13 @@ export default {
     }),
   },
   created() {
-    if(sessionStorage.getItem(this.idUser) != null){
+    if (sessionStorage.getItem(this.idUser) != null) {
       this.datas = JSON.parse(sessionStorage.getItem(this.idUser));
-    }
-    else{
+    } else {
       this.owner = false;
       //funcion get user from database
     }
     console.log(typeof this.datas);
-
   },
   methods: {
     ...mapActions({
