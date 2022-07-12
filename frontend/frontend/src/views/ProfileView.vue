@@ -15,7 +15,7 @@
             <figcaption class="Nombre">
               <!--<h2>{{ user.username }}</h2>-->
               <!--{{ this.userData }}-->
-              {{ $store.getters.user }}
+              {{ $ }}
             </figcaption>
           </figure>
           <div class="datos">

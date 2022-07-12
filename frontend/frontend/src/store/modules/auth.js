@@ -17,13 +17,11 @@ const actions = {
     await authService.post("/register", user);
     await dispatch("fetchUser");
   },
-  async loginUser({ dispatch }, user) {
-    await authService.post("/sign-up", user);
-    await dispatch("fetchUser");
-  },
-  async fetchUser({ commit }) {
-    console.log(commit);
-    await authService.get("/user").then(({ data }) => commit("setUser", data));
+  async loginUser({ commit }, user) {
+    await authService.post("/sign-up", user).then((response) => {
+      console.log("response: ", response);
+      commit("setUser", response["data"]);
+    });
   },
   async logoutUser({ commit }) {
     await authService.post("/logout");
@@ -33,8 +31,11 @@ const actions = {
 
 const mutations = {
   setUser(state, user) {
+    console.log(user);
     state.isLoggedIn = true;
     state.user = user;
+    localStorage.setItem("user", JSON.stringify(state.user));
+    sessionStorage.setItem("user", JSON.stringify(state.user));
   },
   logoutUserState(state) {
     state.isLoggedIn = false;

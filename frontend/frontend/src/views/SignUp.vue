@@ -72,7 +72,8 @@ export default {
     }),
     async login() {
       await this.loginUser(this.profile).then(() => {
-        if (this.authUser.authenticated) {
+        console.log(this.authUser);
+        if (this.authUser) {
           this.$router.push("/profile");
         } else {
           // Handle error

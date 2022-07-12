@@ -41,7 +41,7 @@ export default {
     async login() {
       await this.loginUser(this.user).then(() => {
         if (this.authUser.authenticated) {
-          this.$router.push("/profile");
+          this.$router.push("/secure");
         } else {
           // Handle error
           this.user = {
