@@ -1,6 +1,5 @@
 <template>
   <section>
-    <TheNavigation />
     <div>
       <h1 v-if="slug === 'mycourse'">My courses</h1>
       <h1 v-else-if="slug === 'course'">courses of the comunity</h1>
@@ -65,13 +64,9 @@
   </section>
 </template>
 <script>
-import TheNavigation from "@/components/TheNavigation.vue";
 export default {
   props: ["slug", "datas"],
   //falta el fetch delete()
-  components: {
-    TheNavigation,
-  },
 };
 </script>
 <style scoped>

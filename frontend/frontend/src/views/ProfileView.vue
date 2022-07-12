@@ -1,6 +1,5 @@
 <template>
   <section>
-    <TheNavigation />
     <div class="cuerpo">
       <div class="segmento izq">
         <div class="prof">
@@ -15,7 +14,7 @@
             <!--- --->
             <figcaption class="Nombre">
               <!--<h2>{{ user.username }}</h2>-->
-              a
+              <!--{{ this.userData }}-->
             </figcaption>
           </figure>
           <div class="datos">
@@ -23,7 +22,7 @@
               <!--{% if user.career is not none %}
             {{ user.career }}
             {% else %} - {% endif %}-->
-              a
+              {{ datas["code"] }}
             </p>
             <p>
               <!--{% if user.institute is not none %}
@@ -44,7 +43,11 @@
               Logout
             </button>
           </a>-->
-            <button type="button" class="btn btn-outline-primary">
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              @click="onLogOut"
+            >
               Logout
             </button>
           </div>
@@ -200,12 +203,22 @@
 </template>
 
 <script>
-import TheNavigation from "@/components/TheNavigation.vue";
 export default {
   name: "Profile",
-  props: ["name"],
-  components: {
-    TheNavigation,
+  data() {
+    return {
+      datas: null,
+    };
+  },
+  created() {
+    this.datas = JSON.parse(sessionStorage.getItem("user"));
+    console.log(typeof this.datas);
+  },
+  props: {
+    idUser: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>

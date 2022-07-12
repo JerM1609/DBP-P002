@@ -5,12 +5,13 @@ from .db.database import db, migrate
 from .config.config import Config
 from .endpoints import configure_mails, init_login, init_jwt, api as API
 from .db.database import db
+from .endpoints import configure_mails, init_login, init_jwt, api as API
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    
-    CORS(app, origins=['https://utec.edu.pe', 'http://127.0.0.1:5001', 'http://127.0.0.1:8080'], max_age=10)
+    init_jwt(app)
+    CORS(app, origins=['http://127.0.0.1:5001', 'http://127.0.0.1:8080', 'http://192.168.1.63:8080', 'http://127.0.0.1:8081'], max_age=10)
     # CORS(app, resources={r'/*':{'origins': 'http://localhost:8080',"allow_headers": "Access-Control-Allow-Origin"}})
     # app.config['CORS_HEADERS'] = 'Content-Type'
     db.init_app(app)    
@@ -25,12 +26,13 @@ def create_app():
     init_login(app)
     configure_mails(app)
 
-    print(app.config['UPLOAD_FOLDER'])
+    #print(app.config['UPLOAD_FOLDER'])
 
 
     @app.after_request
     def after_resquest(response):
-        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Origin", "http://192.168.1.3:8080")
+        response.headers.add("Access-Control-Allow-Credentials", "true")
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorizations, true')
         response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PATCH,PUT,OPTIONS')
         return response
