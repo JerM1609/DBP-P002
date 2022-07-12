@@ -4,6 +4,7 @@ const namespaced = true;
 
 const state = {
   user: {},
+  accessToken: null,
   isLoggedIn: false,
 };
 
@@ -13,29 +14,36 @@ const getters = {
 };
 
 const actions = {
-  async registerUser({ dispatch }, user) {
-    await authService.post("/register", user);
-    await dispatch("fetchUser");
-  },
   async loginUser({ commit }, user) {
+    await authService.post("/log-in", user).then((response) => {
+      console.log("response: ", response);
+      commit("setUser", response);
+    });
+  },
+  async signUser({ commit }, user) {
     await authService.post("/sign-up", user).then((response) => {
       console.log("response: ", response);
-      commit("setUser", response["data"]);
+      commit("setUser", response);
     });
   },
   async logoutUser({ commit }) {
     await authService.post("/logout");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     commit("logoutUserState");
   },
 };
 
 const mutations = {
   setUser(state, user) {
+    //user = response
+    console.log("user");
     console.log(user);
     state.isLoggedIn = true;
-    state.user = user;
-    localStorage.setItem("user", JSON.stringify(state.user));
-    sessionStorage.setItem("user", JSON.stringify(state.user));
+    state.user = user["data"]["user"];
+    state.accessToken = user["data"]["access_token"];
+    localStorage.setItem("user", JSON.stringify(user));
+    sessionStorage.setItem("user", JSON.stringify(user));
   },
   logoutUserState(state) {
     state.isLoggedIn = false;

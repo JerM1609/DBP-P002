@@ -44,7 +44,7 @@ class Usuario(UserMixin, db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-            return self.username
+            return self.email
         except:
             db.session.rollback()
         finally:

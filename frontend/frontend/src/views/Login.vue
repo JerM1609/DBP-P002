@@ -1,8 +1,8 @@
 <template>
   <div>
-    <form @submit.prevent="onLogin">
+    <form @submit.prevent="login">
       <label>Username :</label>
-      <input type="username" v-model.trim="profile.username" required />
+      <input type="username" v-model.trim="profile.email" required />
 
       <label>Password :</label>
       <input type="password" v-model.trim="profile.password" required />
@@ -12,7 +12,7 @@
       </div>
     </form>
 
-    <p>UsernameA: {{ profile.username }}</p>
+    <p>UsernameA: {{ profile.email }}</p>
     <p>Password: {{ profile.password }}</p>
   </div>
 </template>
@@ -24,7 +24,7 @@ export default {
     return {
       userData: Object(),
       profile: {
-        username: "",
+        email: "",
         password: "",
       },
     };
@@ -39,13 +39,18 @@ export default {
       loginUser: "auth/loginUser",
     }),
     async login() {
-      await this.loginUser(this.user).then(() => {
-        if (this.authUser.authenticated) {
-          this.$router.push("/secure");
+      await this.loginUser(this.profile).then(() => {
+        if (this.authUser) {
+          this.$router.push({
+            name: "Profile",
+            params: {
+              idUser: this.authUser["username"],
+            },
+          });
         } else {
           // Handle error
-          this.user = {
-            username: null,
+          this.profile = {
+            email: null,
             password: null,
           };
         }

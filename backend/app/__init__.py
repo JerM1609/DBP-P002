@@ -3,7 +3,7 @@ from flask_login import LoginManager
 from flask_cors import CORS
 from .db.database import db, migrate
 from .config.config import Config
-from .endpoints import configure_mails, init_login, api as API
+from .endpoints import configure_mails, init_login, init_jwt, api as API
 from .db.database import db
 from .endpoints import configure_mails, init_login, init_jwt, api as API
 
@@ -20,8 +20,9 @@ def create_app():
         db.create_all()
     
     migrate.init_app(app, db)        
-
+    
     app.register_blueprint(API)
+    init_jwt(app)
     init_login(app)
     configure_mails(app)
 
@@ -30,7 +31,6 @@ def create_app():
 
     @app.after_request
     def after_resquest(response):
-        response.headers.add("Access-Control-Allow-Origin", "http://192.168.1.63:8080")
         response.headers.add("Access-Control-Allow-Credentials", "true")
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorizations, true')
         response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PATCH,PUT,OPTIONS')
