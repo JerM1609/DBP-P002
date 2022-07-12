@@ -90,6 +90,7 @@ export default {
         twitter: null,
         facebook: null,
         instagram: null,
+        Id: this.Id,
       },
       course: {
         portada: null,
@@ -119,6 +120,7 @@ export default {
       createPost: "auth/createPost",
     }),
     async update() {
+      console.log(this.profile.Id);
       await this.updateUser(this.profile).then(() => {
         console.log("a", this.authUser);
         if (this.authUser) {

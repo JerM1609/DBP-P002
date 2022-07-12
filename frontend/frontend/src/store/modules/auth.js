@@ -28,8 +28,7 @@ const actions = {
     });
   },
   async updateUser({ commit }, user /*var*/) {
-    console.log(user);
-    let token = JSON.parse(sessionStorage.getItem("antonio")); //idUser
+    let token = JSON.parse(sessionStorage.getItem(user["Id"])); //idUser
     token = token["user"];
     await authService
       .patch("/editar-perfil/", { antigua: token, nueva: user })
