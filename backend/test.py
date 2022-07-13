@@ -89,61 +89,20 @@ class TestApi(unittest.TestCase):
         
         res = self.client().post('/logout')
         data = json.loads(res.data)        
-
     def test_log_in(self):
         res = self.client().post('/sign-up', json = self.usuario)
         data = json.loads(res.data)        
-        
+        c_user = data['created']
         res = self.client().post('/log-in', json = self.login_usuario)
         data = json.loads(res.data)                
-
-        token = data['access_token']
-        headers={
-            "Authorization":f"Bearer {token}"
-        }
-
+        
+       
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
+        self.assertEqual(data['user_id'], c_user)
 
-        res = self.client().delete('/user', headers=headers)
+        res = self.client().delete('/user/'+str(c_user))
         data = json.loads(res.data)        
-        
-        res = self.client().post('/logout')
-        data = json.loads(res.data)      
-    
-    def test_log_in_failed(self):
-        res = self.client().post('/sign-up', json = self.usuario)
-        data = json.loads(res.data)        
-
-        token = data['access_token']
-        headers={
-            "Authorization":f"Bearer {token}"
-        }
-
-        res = self.client().post('/log-in', json = {})
-        data = json.loads(res.data)                
-
-
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(data['message'], 'Unauthorized')
-        self.assertEqual(data['success'], False)
-
-        res = self.client().delete('/user', headers=headers)
-        data = json.loads(res.data)        
-        
-        res = self.client().post('/logout')
-        data = json.loads(res.data)      
-
-
-        
-    def test_create_usuario_fail(self):
-        res = self.client().post('/sign-up', json = {})
-        data = json.loads(res.data)        
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'unprocessable')
-        
         
         res = self.client().post('/logout')
         data = json.loads(res.data)      
@@ -256,8 +215,7 @@ class TestApi(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(data['deleted'], id_post)
 
-        res = self.client().delete('/user', headers=headers)
-        data = json.loads(res.data)        
+        res = self.client().delete('/user/'+str(c_user) )        
 
     
         res = self.client().post('/logout')
@@ -279,26 +237,7 @@ class TestApi(unittest.TestCase):
         res = self.client().delete('/user/'+str(c_user))
         res = self.client().post('/logout')
     
-    def test_delete_cursos_failed(self):
-        res = self.client().post('/sign-up', json = self.usuario)
-        data = json.loads(res.data)        
-        
-        token = data['access_token']
-        headers={
-            "Authorization":f"Bearer {token}"
-        }        
 
-        res = self.client().delete('/cursos/-10', headers=headers )
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)           
-        self.assertEqual(data['message'], 'resource not found')
-
-        res = self.client().delete('/user', headers=headers)
-        res = self.client().post('/logout')
-    
-    
     def test_update_cursos(self):
         res = self.client().post('/sign-up', json = self.usuario)
         data = json.loads(res.data)        
@@ -320,34 +259,6 @@ class TestApi(unittest.TestCase):
 
         res = self.client().delete('/user/'+str(c_user))
         res = self.client().post('/logout')
-    
-    def test_update_cursos_failed(self):
-        res = self.client().post('/sign-up', json = self.usuario)
-        data = json.loads(res.data)        
-        
-        token = data['access_token']
-        headers={
-            "Authorization":f"Bearer {token}"
-        }        
-
-        res  = self.client().post('/creation_cursos', headers=headers, json = self.posts)
-        data = json.loads(res.data)
-        id_post = data['created']
-
-
-        res = self.client().patch('/cursos/-10', headers = headers,json=self.cursos_edit)
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'resource not found')
-        
-        res = self.client().delete('/cursos/'+str(id_post), headers=headers)
-
-        res = self.client().delete('/user', headers=headers)
-        res = self.client().post('/logout')
-    
-
 
     
     def test_update_cursos_failed(self):
@@ -422,33 +333,6 @@ class TestApi(unittest.TestCase):
         res = self.client().delete('/user/'+str(c_user) )
         data = json.loads(res.data)        
         res = self.client().post('/logout')
-        data = json.loads(res.data)   
-
-
-    def test_create_curso_fail(self): 
-        res = self.client().post('/sign-up', json = self.usuario)
-        data = json.loads(res.data)        
-        
-        
-        token = data['access_token']
-        headers={
-            "Authorization":f"Bearer {token}"
-        }        
-
-        
-        res  = self.client().post('/creation_cursos', headers=headers, json = {})
-        data = json.loads(res.data)
-
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'unprocessable')        
-        
-                
-
-        res = self.client().delete('/user', headers=headers)
-        data = json.loads(res.data)        
-        res = self.client().post('/logout')
         data = json.loads(res.data)    
         
 
@@ -499,24 +383,22 @@ class TestApi(unittest.TestCase):
         res = self.client().delete('/user/'+str(c_user))
         res = self.client().post('/logout')
 
+    
 
     def test_delete_posts_failed(self):
         res = self.client().post('/sign-up', json = self.usuario)
         data = json.loads(res.data)        
         
-        token = data['access_token']
-        headers={
-            "Authorization":f"Bearer {token}"
-        }        
+        c_user = data['created']
 
-        res = self.client().delete('/posts/-10', headers=headers )
+        res = self.client().delete('/posts/-10' )
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)           
         self.assertEqual(data['message'], 'resource not found')
 
-        res = self.client().delete('/user', headers=headers)
+        res = self.client().delete('/user/'+str(c_user))
         res = self.client().post('/logout')
 
 
@@ -560,31 +442,11 @@ class TestApi(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
         
-    def test_update_posts_failed(self):
-        res = self.client().post('/sign-up', json = self.usuario)
-        data = json.loads(res.data)        
-        
-        token = data['access_token']
-        headers={
-            "Authorization":f"Bearer {token}"
-        }        
+        res = self.client().delete('/posts/'+str(id_post))
 
-        res  = self.client().post('/creation_posts', headers=headers, json = self.posts)
-        data = json.loads(res.data)
-        id_post = data['created']
-
-
-        res = self.client().patch('/posts/-10', headers = headers,json=self.posts_edit)
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'resource not found')
-        
-        res = self.client().delete('/posts/'+str(id_post), headers=headers)
-
-        res = self.client().delete('/user', headers=headers)
+        res = self.client().delete('/user/'+str(c_user))
         res = self.client().post('/logout')
+
 
 
     def test_create_posts(self): 
@@ -612,27 +474,8 @@ class TestApi(unittest.TestCase):
     def test_create_posts_fail(self): 
         res = self.client().post('/sign-up', json = self.usuario)
         data = json.loads(res.data)        
-        
-        
-        token = data['access_token']
-        headers={
-            "Authorization":f"Bearer {token}"
-        }        
+        c_user = data['created']           
 
-        
-        res  = self.client().post('/creation_posts', headers=headers, json = {})
-        data = json.loads(res.data)
-
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'unprocessable')        
-                    
-
-        res = self.client().delete('/user', headers=headers)
-        data = json.loads(res.data)        
-        res = self.client().post('/logout')
-        data = json.loads(res.data) 
 
         
         res  = self.client().post('/creation_posts', json = {})
