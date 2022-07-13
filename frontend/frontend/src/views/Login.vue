@@ -1,7 +1,7 @@
 <template>
   <div>
     <form @submit.prevent="login">
-      <label>Username :</label>
+      <label>Email :</label>
       <input type="username" v-model.trim="profile.email" required />
 
       <label>Password :</label>
@@ -11,9 +11,6 @@
         <button type="submit">Log in</button>
       </div>
     </form>
-
-    <p>UsernameA: {{ profile.email }}</p>
-    <p>Password: {{ profile.password }}</p>
   </div>
 </template>
 
@@ -40,11 +37,12 @@ export default {
     }),
     async login() {
       await this.loginUser(this.profile).then(() => {
+        console.log(this.authUser);
         if (this.authUser) {
           this.$router.push({
             name: "Profile",
             params: {
-              idUser: this.authUser["username"],
+              idUser: this.authUser["logged_username"],
             },
           });
         } else {
@@ -69,14 +67,12 @@ form {
   padding: 20px;
   border-radius: 10px;
 }
-
 label {
   color: #aaa;
   display: inline-block;
   margin: 25px 0 15px;
   text-transform: uppercase;
 }
-
 input,
 select {
   display: block;
@@ -87,7 +83,6 @@ select {
   border-bottom: 1px solid #ddd;
   color: #555;
 }
-
 input[type="checkbox"] {
   display: inline-block;
   width: 16px;
@@ -95,7 +90,6 @@ input[type="checkbox"] {
   position: relative;
   top: 2px;
 }
-
 .pill {
   display: inline-block;
   margin: 20px 10px 0 0;
@@ -105,7 +99,6 @@ input[type="checkbox"] {
   cursor: pointer;
   background: #eee;
 }
-
 button {
   background: rgb(7, 24, 7);
   border: 0;
@@ -113,11 +106,9 @@ button {
   color: white;
   border-radius: 20px;
 }
-
 .submit {
   text-align: center;
 }
-
 .error {
   color: #ff0000;
   margin-top: 10px;

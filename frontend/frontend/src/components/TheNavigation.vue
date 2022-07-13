@@ -12,7 +12,10 @@
             <div class="dropdown-content">
               <a v-for="route in Post" :key="route.id">
                 <router-link
-                  :to="{ name: route.name, params: { slug: route.slug } }"
+                  :to="{
+                    name: route.name,
+                    params: { slug: route.slug, Id: this.idUser },
+                  }"
                   >{{ route.description }}</router-link
                 >
               </a>
@@ -25,7 +28,10 @@
             <div class="dropdown-content">
               <a v-for="route in Course" :key="route.id">
                 <router-link
-                  :to="{ name: route.name, params: { slug: route.slug } }"
+                  :to="{
+                    name: route.name,
+                    params: { slug: route.slug, Id: this.idUser },
+                  }"
                   >{{ route.description }}</router-link
                 >
               </a>
@@ -34,7 +40,7 @@
         </li>
       </ul>
       <div class="photo">
-        <router-link :to="{ name: 'Profile', params: { idUser: 'a' } }">
+        <router-link :to="{ name: 'Profile', params: { idUser: this.idUser } }">
           <img alt="Vue logo" src="../assets/logo.png"
         /></router-link>
       </div>
@@ -44,23 +50,17 @@
 
 <script>
 import routes from "@/routes";
-
 export default {
   name: "TheNavigation",
   data() {
     return {
+      idUser: sessionStorage.key(0),
       Post: routes.Post,
       Course: routes.Course,
       datas: null,
       page: null,
       slug: null,
     };
-  },
-  props: {
-    profile: {
-      type: String,
-      require: true,
-    },
   },
   methods: {},
 };

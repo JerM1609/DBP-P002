@@ -31,7 +31,7 @@ export default {
   color: #2c3e50;
 }
 html {
-  background-color: aqua;
+  background-color: #c2c2fe;
 }
 
 nav {

@@ -16,8 +16,8 @@ export default {
     },
     {
       name: "Create",
-      slug: "create-post",
-      description: "Crear un Post",
+      slug: "post",
+      description: "Crear un post",
       id: 3,
     },
   ],
@@ -35,6 +35,12 @@ export default {
       description: "Cursos",
       function: "course()",
       id: 2,
+    },
+    {
+      name: "Create",
+      slug: "course",
+      description: "Crear un curso",
+      id: 3,
     },
   ],
 };

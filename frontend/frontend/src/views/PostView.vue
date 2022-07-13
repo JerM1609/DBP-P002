@@ -4,22 +4,20 @@
       <h1 v-if="slug === 'mypost'">My posts</h1>
       <h1 v-else-if="slug === 'post'">Post of the comunity</h1>
       <div v-if="slug === 'mypost'" class="posts">
-        <div class="publication">
+        <div class="publication" v-for="post in my_post" :key="post.id">
           <div class="content">
-            <h2><a href="#">as</a></h2>
+            <h2>
+              <a href="#">{{ post["titulo"] }}</a>
+            </h2>
             <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-              Excepturi nemo impedit animi suscipit. Obcaecati asperiores atque
-              perspiciatis culpa fugiat? Nulla porro rerum ducimus quisquam!
-              Accusantium asperiores fugit quod explicabo nobis.
+              {{ post["contenido"] }}
             </p>
           </div>
           <div class="edition">
-            <router-link
-              :to="{ name: 'Change', params: { slug: slug, Id: 1 } }"
-              class="btn btn-primary"
-              >Edit</router-link
-            >
+            <p>
+              {{ post["fecha"] }}
+            </p>
+
           </div>
         </div>
         <!--
@@ -37,14 +35,11 @@
       </div>
       --></div>
       <div v-else-if="slug === 'post'" class="posts">
-        <div class="publication">
+        <div class="publication" v-for="post in other_post" :key="post.id">
           <div>
             <h2><a href="#">as</a></h2>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi
-              similique quisquam necessitatibus quod quae ratione incidunt!
-              Dolore dolor, beatae, tempora quis similique perferendis labore
-              natus eum corrupti qui, nihil sunt.
+              <!-- {{ this.other_posts }} -->
             </p>
           </div>
         </div>
@@ -66,8 +61,70 @@
   </section>
 </template>
 <script>
+import axios from "axios";
+
 export default {
   props: ["slug", "datas"],
+  //falta el fetch delete()
+  data() {
+    return {
+      idUser: sessionStorage.key(0),
+      my_post: {
+        type: Array,
+      },
+      other_posts: {
+        type: Array,
+      },
+    };
+  },
+  methods: {
+    myPost() {
+      let obj = JSON.parse(sessionStorage.getItem(this.idUser));
+      console.log(obj);
+      let id_post = obj["user"]["email"];
+      let mp = [];
+      const path = "http://127.0.0.1:5001/posts";
+      axios
+        .get(path)
+        .then((res) => {
+          console.log(res);
+          res.data["posts"].forEach((element) => {
+            if (element["id_autor"] === id_post) {
+              mp.push(element);
+            }
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      this.my_post = mp;
+    },
+    otherPost() {
+      let obj = JSON.parse(sessionStorage.getItem(this.idUser));
+      console.log(obj);
+      let id_post = obj["user"]["email"];
+      let op = [];
+      const path = "http://127.0.0.1:5001/posts";
+      axios
+        .get(path)
+        .then((res) => {
+          console.log(res);
+          res.data["posts"].forEach((element) => {
+            if (element["id_autor"] !== id_post) {
+              op.push(element);
+            }
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      this.other_posts = op;
+    },
+  },
+  created() {
+    this.myPost();
+    this.otherPost();
+  },
 };
 </script>
 

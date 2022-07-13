@@ -4,14 +4,13 @@
       <h1 v-if="slug === 'mycourse'">My courses</h1>
       <h1 v-else-if="slug === 'course'">courses of the comunity</h1>
       <div v-if="slug === 'mycourse'" class="posts">
-        <div class="publication">
+        <div class="publication" v-for="course in my_courses" :key="course.id">
           <div class="content">
-            <h2><a href="#">as</a></h2>
+            <h2>
+              <a href="#">{{ course["titulo"] }}</a>
+            </h2>
             <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-              Excepturi nemo impedit animi suscipit. Obcaecati asperiores atque
-              perspiciatis culpa fugiat? Nulla porro rerum ducimus quisquam!
-              Accusantium asperiores fugit quod explicabo nobis.
+              {{ course["contenido"] }}
             </p>
           </div>
           <div class="edition">
@@ -35,14 +34,17 @@
       </div>
       --></div>
       <div v-else-if="slug === 'course'" class="posts">
-        <div class="publication">
+        <div
+          class="publication"
+          v-for="course in other_courses"
+          :key="course.id"
+        >
           <div>
-            <h2><a href="#">as</a></h2>
+            <h2>
+              <a href="#">{{ course["titulo"] }}</a>
+            </h2>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi
-              similique quisquam necessitatibus quod quae ratione incidunt!
-              Dolore dolor, beatae, tempora quis similique perferendis labore
-              natus eum corrupti qui, nihil sunt.
+              {{ course["contenido"] }}
             </p>
           </div>
         </div>
@@ -63,16 +65,82 @@
     </div>
   </section>
 </template>
+
 <script>
+import axios from "axios";
+
 export default {
   props: ["slug", "datas"],
   //falta el fetch delete()
+  data() {
+    return {
+      idUser: sessionStorage.key(0),
+      my_courses: {
+        type: Array,
+      },
+      other_courses: {
+        type: Array,
+      },
+    };
+  },
+  methods: {
+    myCourses() {
+      let obj = JSON.parse(sessionStorage.getItem(this.idUser));
+      let id_teacher = obj["user"]["email"];
+      let mc = [];
+      const path = "http://127.0.0.1:5001/cursos";
+      axios
+        .get(path)
+        .then((res) => {
+          // console.log(res.data["cursos"]);
+
+          res.data["cursos"].forEach((element) => {
+            if (element["id_teacher"] === id_teacher) {
+              mc.push(element);
+            }
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      this.my_courses = mc;
+    },
+    otherCourses() {
+      let obj = JSON.parse(sessionStorage.getItem(this.idUser));
+      let id_teacher = obj["user"]["email"];
+      let oc = [];
+      const path = "http://127.0.0.1:5001/cursos";
+      axios
+        .get(path)
+        .then((res) => {
+          // console.log(res.data["cursos"]);
+
+          res.data["cursos"].forEach((element) => {
+            if (element["id_teacher"] !== id_teacher) {
+              oc.push(element);
+            }
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      this.other_courses = oc;
+    },
+  },
+  created() {
+    this.myCourses();
+    this.otherCourses();
+  },
 };
 </script>
+
 <style scoped>
 .posts {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
   width: 100%;
 }
 .publication {
@@ -83,6 +151,7 @@ export default {
   display: flex;
   padding: 1%;
   width: 80%;
+  margin: 5px;
   text-align: left;
   border-radius: 20px;
 }
