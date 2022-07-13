@@ -52,12 +52,6 @@ Se presenta a continuación los requerimientos de `<APP>`
 
 - Un post se identifica con su propio id y el de su creador. Tiene un título, subtítulo, contenido y fecha de creación.
 
-## CONSIDERACIONES
-- No puede existir más de 1 curso con el mismo nombre, entre usuarios.
-    - Hash: `md5(user.id + curso.nombre)`
-- Verificación: Curriculum + validación manual.
-- Pago de cursos: Yape, Plin, PayPal API
-
 ## TASKS
 
 - Diego
