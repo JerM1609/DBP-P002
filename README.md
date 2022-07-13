@@ -74,13 +74,13 @@ Se presenta a continuación los requerimientos de `<APP>`
 
 Desde un inicio, sabíamos que queríamos implementar un método de autenticación a nuestro proyecto, debido a que le daría un toque realista de lo que se implementa en la industria. Por esa razón, decidimos intentar implementar el OAuth; sin embargo, después de unos días nos empezó a tomar más tiempo de lo que pensamos por lo que decidimos cambiar a JSON Web Tokens (JWT), lo que nos resultó mucho más fácil y sencillo de entender a comparación del OAuth, en gran parte debido a la documentación de la librería de flask_jwt_extended. 
 
-Una vez con todo seteado(los access tokens, los refresh tokens, los responses enviados en cada endpoint, y cada endpoint que lo necesite resguardado con el decorator @jwt_required(), configuración del CORS, etc.), empezamos a setear la comunicación de Axios con el backend. Después de investigar, vimos que para acceder a los endpoints de @jwt_required() debíamos enviar headers de tipo Authorization que contengan un token de seguridad (del JWT). Fue ahí donde tuvimos problemas con el paso de los headers por medio de Axios, a pesar de estar buscando diferentes maneras y formatos de pasar los headers no pudimos solucionarlo: al tratar de acceder al endpoint no se nos otorgaba acceso a pesar de enviarle el token.
+Una vez con todo seteado(los access tokens, los refresh tokens, los responses enviados en cada endpoint, y cada endpoint que lo necesite resguardado con el decorator @jwt_required(), configuración del CORS, etc.), empezamos a setear la comunicación de Axios con el backend. Después de investigar, vimos que para acceder a los endpoints de @jwt_required() debíamos enviar headers de tipo Authorization que contengan un token de seguridad (del JWT). Fue ahí donde tuvimos problemas con el paso de los headers por medio de Axios, a pesar de estar buscando diferentes maneras y formatos de pasar los headers no pudimos solucionarlo: al tratar de acceder al endpoint no se nos otorgaba acceso a pesar de enviarle el token. Lo curioso fue que los testings realizados con cada endpoint con el @jwt_required() sí funcionaban pasándole el headers de Authorization, pero por alguna razón no al momento de hacerlo con Axios. 
 
-Por eso, decidimos retirar los tokens del método JWT, y solo quedarnos con el id del user y sus datos en el sessionStorage de VueX, a lo largo de todos los endpoints. **Como prueba de nuestros intentos de arreglar los problemas, se puede ver en los commits como pasamos de agregar configuraciones para el OAuth y para los JWT.**
+Por eso, decidimos retirar los tokens del método JWT, y solo quedarnos con el id del user y sus datos en el sessionStorage de VueX, a lo largo de todos los endpoints. **Como prueba de nuestros intentos de arreglar los problemas con estos métodos de Auth, se puede ver en los commits como pasamos de agregar configuraciones para el OAuth y para los JWT.**
 
 ## TESTING
 
-#Explicar tests mas importantes, que se lograron, que no se lograron
+Realizamos un testing para los principales aspectos de nuestro proyecto. Sign-up, Log-in, Update y Delete de Usuarios. Creación, Update, Delete y Get de Cursos. Get, Creación, Delete y Update de Posts. La mayoría de estos con su flujo fallido y su flujo correcto.
 
 ## DESPLIEGUE
 
@@ -94,3 +94,6 @@ Por eso, decidimos retirar los tokens del método JWT, y solo quedarnos con el i
 ## REFERENCES
 
 - [Full Stack Project with Vue.js and Flask](https://www.youtube.com/watch?v=lenV5aVOMp8)
+Nuestra guía principal para Flask y JWT Auth: [Parte 1](https://fareedidris.medium.com/cookie-based-authentication-using-flask-and-vue-js-part-1-c625a530c157
+) [Parte 2](https://fareedidris.medium.com/cookie-based-authentication-using-flask-and-vue-js-part-2-bd2b47545466
+)
