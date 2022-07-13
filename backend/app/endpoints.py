@@ -78,7 +78,7 @@ def paginate_items(request, selection):
 
     items = [item.get_attributes() for item in selection]
     current_items = items[start:end]
-    return current_items
+    return items
 
 
 # API ENDPOINTS
@@ -146,6 +146,7 @@ def create_user():
 
         
         usuario =  Usuario.query.filter_by(email = email).one_or_none()
+        
         if usuario is not None:
             abort(422)
         
@@ -171,38 +172,18 @@ def create_user():
             })
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
+        print("usuario")
         return response
         
     except Exception as e:
         print(f"EXCEPTION: {e}")
         abort(500)
 
-@api.route("/user/<user_id>", methods=['DELETE'])
-def delete_user_by_id(user_id):
-    error_404 = False    
-    email = user_id
-
-    try:        
-        user = Usuario.query.filter_by(email = email).one_or_none()
-        if user is None:
-            error_404 = True
-            abort(404)
-        user.delete()
-        return jsonify({
-            'success': True,
-            'code': 200,
-            'deleted': email
-            })
-    except Exception as e:
-        print(e)
-        if error_404:
-            abort(404)
-        else:
-            abort(500)
 @api.route("/user", methods=['DELETE'])
-def delete_user_by(user_id):
+@jwt_required()
+def delete_user_by_id():
     error_404 = False
-    email = user_id
+    email = get_jwt_identity()
 
     try:        
         user = Usuario.query.filter_by(email = email).one_or_none()
@@ -230,15 +211,11 @@ def wbada():
 @api.route('/editar-perfil/', methods=['PATCH'])
 def update_perfil():
     error_404 = False
-    body = request.get_json() 
     try:
-        nueva_data=None
-        if body.get('antigua'):
-            antigua_data = body.get('antigua')
-            nueva_data= body.get('nueva')
-            email=antigua_data.get('email')
-        else:
-            email=body.get('email')
+        body = request.get_json() 
+        antigua_data = body.get('antigua')
+        nueva_data= body.get('nueva')
+        email=antigua_data.get('email')
         userInfo= Usuario.query.filter_by(email = email).one_or_none()
         access_token = create_access_token(identity=userInfo.get_id())
         refresh_token = create_refresh_token(identity=userInfo.get_id())
@@ -246,58 +223,36 @@ def update_perfil():
         if userInfo is None: 
             error_404 = True
             abort(404)
-        if nueva_data:
-            if 'country' in nueva_data: 
-                userInfo.country = nueva_data.get('country')
-            if 'institute' in nueva_data: 
-                userInfo.institute = nueva_data.get('institute')
-            if 'career' in nueva_data: 
-                userInfo.career = nueva_data.get('career')
+        
+
+        if 'country' in nueva_data: 
+            userInfo.country = nueva_data.get('country')
+        if 'institute' in nueva_data: 
+            userInfo.institute = nueva_data.get('institute')
+        if 'career' in nueva_data: 
+            userInfo.career = nueva_data.get('career')
 
 
-            if 'website' in nueva_data: 
-                userInfo.website = nueva_data.get('website')
-            if 'github' in nueva_data: 
-                userInfo.github = nueva_data.get('github')                    
-            if 'twitter' in nueva_data: 
-                userInfo.twitter = nueva_data.get('twitter')            
-            if 'instagram' in nueva_data: 
-                userInfo.instagram = nueva_data.get('instagram')            
-            if 'facebook' in nueva_data: 
-                userInfo.facebook = nueva_data.get('facebook')            
+        if 'website' in nueva_data: 
+            userInfo.website = nueva_data.get('website')
+        if 'github' in nueva_data: 
+            userInfo.github = nueva_data.get('github')                    
+        if 'twitter' in nueva_data: 
+            userInfo.twitter = nueva_data.get('twitter')            
+        if 'instagram' in nueva_data: 
+            userInfo.instagram = nueva_data.get('instagram')            
+        if 'facebook' in nueva_data: 
+            userInfo.facebook = nueva_data.get('facebook')            
 
-            if 'photo' in nueva_data:
-                userInfo.photo = nueva_data.get('photo')
-        else:
-
-            if 'country' in body: 
-                userInfo.country = body.get('country')
-            if 'institute' in body: 
-                userInfo.institute = body.get('institute')
-            if 'career' in body: 
-                userInfo.career = body.get('career')
-
-
-            if 'website' in body: 
-                userInfo.website = body.get('website')
-            if 'github' in body: 
-                userInfo.github = body.get('github')                    
-            if 'twitter' in body: 
-                userInfo.twitter = body.get('twitter')            
-            if 'instagram' in body: 
-                userInfo.instagram = body.get('instagram')            
-            if 'facebook' in body: 
-                userInfo.facebook = body.get('facebook')            
-
-            if 'photo' in body:
-                userInfo.photo = body.get('photo')
+        if 'photo' in nueva_data:
+            userInfo.photo = nueva_data.get('photo')
+        
         
         userInfo.update()
         userInfo= Usuario.query.filter_by(email = email).one_or_none()
         print(userInfo.username)
         response = jsonify({
                 'success': True,
-                'code': 200,
                 'endpoint': '/editar-perfil',                
                 'access_token': access_token,
                 'method': 'PATCH',
@@ -305,6 +260,7 @@ def update_perfil():
                 'user': userInfo.get_attributes(),
                 'created': email
             })
+        print("a")
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
         return response
@@ -316,15 +272,9 @@ def update_perfil():
 
 @api.route('/posts', methods=['GET'])
 def get_posts():
-    body = request.get_json()
-    email = body.get('email', None)
-    userInfo= Usuario.query.filter_by(email = email).one_or_none()
-    
-    if userInfo is None: 
-        error_404 = True
-        abort(404)
     selection = Post.query.all()
-    posts = paginate_items(request, selection)
+    posts = [item.get_attributes() for item in selection]
+    
     if len(posts) == 0:
         abort(404)
     #deberia ser abort? o mas bien enviar lista vacia y que el 
@@ -334,7 +284,6 @@ def get_posts():
         'code': 200,
         'endpoint': '/post',
         'method': 'GET',
-        'current_user': email,
         'posts': posts,
         'total_posts': len(selection)
     })
@@ -358,7 +307,7 @@ def create_post():
     titulo = body.get('titulo', None)
     subtitulo = body.get('subtitulo', None)
     contenido = body.get('contenido', None)
-    portada = body.get('portada', None)
+    portada = body.get('portada', "")
     search = body.get('search', None)
 
     if search:
@@ -376,12 +325,11 @@ def create_post():
     #if portada is None: set portada a imagen por default/vacio
 
     try:
-        img = portada
-        filename = secure_filename(img)
-        if filename:
-            realname = filename.replace(' ', '_')
-        else:
-            realname = portada
+        # img = portada
+        # filename = secure_filename(img)
+        
+        # realname = filename.replace(' ', '_')
+        realname = portada
         post = Post(
             id=hashlib.md5(titulo.encode()).hexdigest(),
             titulo=titulo,
@@ -487,7 +435,7 @@ def get_cursos():
     email = body.get('email',None)
 
     selection = Curso.query.order_by('id').all()
-    cursos = paginate_items(request, selection)
+    cursos = [item.get_attributes() for item in selection]
 
     if len(cursos) == 0:
         abort(404)

@@ -2,5 +2,5 @@ venv/
 node_modules/
 .env
 __pycache__/
-config.py
+backend/app/config/config.py
 __pycache__
